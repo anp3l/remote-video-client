@@ -5,17 +5,35 @@
     <div>
       <label class="block mb-2 font-medium">Video File *</label>
       <input type="file" 
-             accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
-             (change)="onVideoFileSelected($event)"
-             class="block w-full text-sm text-muted-foreground
+            accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
+            (change)="onVideoFileSelected($event)"
+            [disabled]="isValidating()"
+            class="block w-full text-sm text-muted-foreground
                     file:mr-4 file:py-2 file:px-4
                     file:rounded file:border-0
                     file:bg-primary file:text-white
                     hover:file:bg-primary/90
-                    cursor-pointer"
-             required>
-      @if (videoFile()) {
-        <p class="mt-1 text-sm text-muted-foreground">{{ videoFile()!.name }}</p>
+                    cursor-pointer
+                    disabled:opacity-50 disabled:cursor-not-allowed"
+            required>
+      
+      @if (isValidating()) {
+        <p class="mt-1 text-sm text-blue-600">
+          <mat-icon class="inline-block w-4 h-4 animate-spin">sync</mat-icon>
+          Validazione video in corso...
+        </p>
+      }
+      
+      @if (videoFile() && !validationError()) {
+        <p class="mt-1 text-sm text-green-600">
+          ✓ {{ videoFile()!.name }}
+        </p>
+      }
+      
+      @if (validationError()) {
+        <p class="mt-1 text-sm text-red-600">
+          ⚠ {{ validationError() }}
+        </p>
       }
     </div>
 

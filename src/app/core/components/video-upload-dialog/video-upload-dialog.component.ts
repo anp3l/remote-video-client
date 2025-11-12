@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { VideoService } from '../../services/video.service';
 import { CATEGORIES } from '../../config/app.config';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-video-upload-dialog',
@@ -21,7 +22,8 @@ import { CATEGORIES } from '../../config/app.config';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
   ],
   templateUrl: './video-upload-dialog.component.html',
   styleUrls: ['./video-upload-dialog.component.scss']
@@ -35,6 +37,8 @@ export class VideoUploadDialogComponent {
   videoFile = signal<File | null>(null);
   thumbnailFile = signal<File | null>(null);
   uploading = signal(false);
+  validationError = signal<string | null>(null);
+  isValidating = signal(false);
 
   uploadForm = this.fb.group({
     title: ['', Validators.required],
@@ -43,11 +47,40 @@ export class VideoUploadDialogComponent {
     tags: ['']
   });
 
-  onVideoFileSelected(event: Event): void {
+  async onVideoFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) {
-      this.videoFile.set(file);
+    
+    if (!file) {
+      this.videoFile.set(null);
+      this.validationError.set(null);
+      return;
+    }
+
+    // Reset previous state
+    this.validationError.set(null);
+    this.isValidating.set(true);
+
+    try {
+      // Validate the video file
+      const result = await this.videoService.validateVideoFile(file);
+      
+      if (result.valid) {
+        this.videoFile.set(file);
+        this.validationError.set(null);
+        console.log(`Video valido - Durata: ${result.duration?.toFixed(2)}s`);
+      } else {
+        this.videoFile.set(null);
+        this.validationError.set(result.reason || 'File non valido');
+        input.value = ''; // Reset input
+      }
+    } catch (error) {
+      console.error('Errore durante la validazione del video:', error);
+      this.validationError.set('Errore durante la validazione del file');
+      this.videoFile.set(null);
+      input.value = '';
+    } finally {
+      this.isValidating.set(false);
     }
   }
 

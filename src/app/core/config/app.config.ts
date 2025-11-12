@@ -2,21 +2,25 @@ export const AppConfig = {
   apiBaseUrl: 'http://localhost:3070',
   defaultViewMode: 'grid' as const,
   itemsPerPage: 20,
+  
+  // Video validation
+  maxVideoSizeMB: 2048,
+  maxVideoDurationSeconds: 30, // 1 ora
   supportedVideoFormats: [
     'video/mp4',
-    'video/webm',
-    'video/ogg',
-    'video/quicktime',
-    'video/x-msvideo'
+    'video/quicktime',      // MOV
+    'video/x-msvideo'       // AVI
   ],
+  supportedVideoExtensions: ['mp4', 'mov', 'avi'],
+  
+  // Image/Thumbnail validation
+  maxThumbnailSizeMB: 10,
   supportedImageFormats: [
     'image/jpeg',
     'image/png',
     'image/webp',
-    'image/gif'
+    'image/jpg'
   ],
-  maxVideoSizeMB: 2048,
-  maxThumbnailSizeMB: 10,
 } as const;
 
 export const CATEGORIES = [
@@ -31,3 +35,6 @@ export const CATEGORIES = [
 ] as const;
 
 export type Category = typeof CATEGORIES[number];
+
+// Helper per convertire MB in bytes
+export const MB_TO_BYTES = 1024 * 1024;
