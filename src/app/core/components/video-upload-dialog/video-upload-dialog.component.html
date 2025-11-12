@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>Upload Nuovo Video</h2>
+
+<mat-dialog-content class="!p-6">
+  <form [formGroup]="uploadForm" class="space-y-4">
+    <div>
+      <label class="block mb-2 font-medium">Video File *</label>
+      <input type="file" 
+             accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
+             (change)="onVideoFileSelected($event)"
+             class="block w-full text-sm text-muted-foreground
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded file:border-0
+                    file:bg-primary file:text-white
+                    hover:file:bg-primary/90
+                    cursor-pointer"
+             required>
+      @if (videoFile()) {
+        <p class="mt-1 text-sm text-muted-foreground">{{ videoFile()!.name }}</p>
+      }
+    </div>
+
+    <div>
+      <label class="block mb-2 font-medium">Thumbnail Image</label>
+      <input type="file" 
+             accept="image/*"
+             (change)="onThumbnailFileSelected($event)"
+             class="block w-full text-sm text-muted-foreground
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded file:border-0
+                    file:bg-secondary file:text-secondary-foreground
+                    hover:file:bg-secondary/90
+                    cursor-pointer">
+      @if (thumbnailFile()) {
+        <p class="mt-1 text-sm text-muted-foreground">{{ thumbnailFile()!.name }}</p>
+      }
+    </div>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Titolo *</mat-label>
+      <input matInput 
+             formControlName="title"
+             placeholder="Inserisci titolo video">
+      @if (uploadForm.get('title')?.hasError('required')) {
+        <mat-error>Il titolo è obbligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput 
+                formControlName="description"
+                rows="4"
+                placeholder="Inserisci descrizione"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Categoria *</mat-label>
+      <mat-select formControlName="category">
+        @for (cat of categories; track cat) {
+          <mat-option [value]="cat">{{ cat }}</mat-option>
+        }
+      </mat-select>
+      @if (uploadForm.get('category')?.hasError('required')) {
+        <mat-error>La categoria è obbligatoria</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Tags (separati da virgola)</mat-label>
+      <input matInput 
+             formControlName="tags"
+             placeholder="es. tutorial, beginner, web development">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!p-6 !pt-0">
+  <button mat-button (click)="onCancel()" [disabled]="uploading()">
+    Annulla
+  </button>
+  <button mat-raised-button 
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="!uploadForm.valid || !videoFile() || uploading()">
+    @if (uploading()) {
+      <mat-spinner diameter="20" class="mr-2 inline-block"></mat-spinner>
+    }
+    {{ uploading() ? 'Caricamento...' : 'Carica Video' }}
+  </button>
+</mat-dialog-actions>

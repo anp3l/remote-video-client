@@ -1,0 +1,46 @@
+<div class="video-grid-container">
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner class="spinner"></mat-spinner>
+      <h2 class="loading-text">Caricamento video...</h2>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!loading && videos.length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">video_library</mat-icon>
+      <h2 class="empty-title">Nessun video trovato</h2>
+      <p class="empty-description">
+        @if (hasFilters) {
+          Prova a modificare i filtri o la ricerca
+        } @else {
+          Carica il tuo primo video per iniziare
+        }
+      </p>
+      @if (!hasFilters) {
+        <button mat-raised-button 
+                color="primary"
+                (click)="onUploadClick()">
+          <mat-icon>upload</mat-icon>
+          Carica Video
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Video Grid/List -->
+  @if (!loading && videos.length > 0) {
+    <div [class]="viewMode === 'grid' ? 'video-grid' : 'video-list'">
+      @for (video of videos; track video.id) {
+        <app-video-card 
+          [video]="video"
+          (play)="onVideoPlay(video)"
+          (edit)="onVideoEdit(video)"
+          (delete)="onVideoDelete(video)">
+        </app-video-card>
+      }
+    </div>
+  }
+</div>

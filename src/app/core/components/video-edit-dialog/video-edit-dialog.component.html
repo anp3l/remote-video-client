@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>Modifica Video</h2>
+
+<mat-dialog-content class="!p-6">
+  <form [formGroup]="editForm" class="space-y-4">
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Titolo *</mat-label>
+      <input matInput 
+             formControlName="title"
+             placeholder="Inserisci titolo video">
+      @if (editForm.get('title')?.hasError('required')) {
+        <mat-error>Il titolo è obbligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Descrizione</mat-label>
+      <textarea matInput 
+                formControlName="description"
+                rows="4"
+                placeholder="Inserisci descrizione"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Categoria *</mat-label>
+      <mat-select formControlName="category">
+        @for (cat of categories; track cat) {
+          <mat-option [value]="cat">{{ cat }}</mat-option>
+        }
+      </mat-select>
+      @if (editForm.get('category')?.hasError('required')) {
+        <mat-error>La categoria è obbligatoria</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Tags (separati da virgola)</mat-label>
+      <input matInput 
+             formControlName="tags"
+             placeholder="es. tutorial, beginner, web development">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!p-6 !pt-0">
+  <button mat-button (click)="onCancel()" [disabled]="saving()">
+    Annulla
+  </button>
+  <button mat-raised-button 
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="!editForm.valid || saving()">
+    @if (saving()) {
+      <mat-spinner diameter="20" class="mr-2 inline-block"></mat-spinner>
+    }
+    {{ saving() ? 'Salvataggio...' : 'Salva Modifiche' }}
+  </button>
+</mat-dialog-actions>

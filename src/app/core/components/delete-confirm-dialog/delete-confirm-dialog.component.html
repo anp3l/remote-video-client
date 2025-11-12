@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Sei sicuro?</h2>
+
+<mat-dialog-content class="!p-6">
+  <p class="text-muted-foreground">
+    Questo eliminerà permanentemente <strong>"{{ data.video.title }}"</strong> dalla tua libreria.
+    Questa azione non può essere annullata.
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!p-6 !pt-0">
+  <button mat-button (click)="onCancel()">Annulla</button>
+  <button mat-raised-button 
+          color="warn"
+          (click)="onConfirm()">
+    Elimina
+  </button>
+</mat-dialog-actions>

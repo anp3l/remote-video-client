@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-background flex flex-col">
+  <!-- Header Component -->
+  <app-library-header
+    [videoCount]="videoCount()"
+    [filteredCount]="filteredCount()"
+    [categories]="categories()"
+    [searchQuery]="searchQuery()"
+    [categoryFilter]="categoryFilter()"
+    [sortBy]="sortBy()"
+    [viewMode]="viewMode()"
+    [loading]="loading()"
+    (searchQueryChange)="onSearchQueryChange($event)"
+    (categoryFilterChange)="onCategoryFilterChange($event)"
+    (sortByChange)="onSortByChange($event)"
+    (viewModeChange)="onViewModeChange($event)"
+    (upload)="openUploadDialog()"
+    (refresh)="refreshVideos()">
+  </app-library-header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8 flex-1">
+    <!-- Video Grid Component -->
+    <app-video-grid
+      [videos]="filteredVideos()"
+      [loading]="loading()"
+      [viewMode]="viewMode()"
+      [searchQuery]="searchQuery()"
+      [categoryFilter]="categoryFilter()"
+      (videoPlay)="openPlayerDialog($event)"
+      (videoEdit)="openEditDialog($event)"
+      (videoDelete)="openDeleteDialog($event)"
+      (uploadClick)="openUploadDialog()">
+    </app-video-grid>
+  </main>
+
+  <!-- Footer Component -->
+  <app-footer></app-footer>
+</div>

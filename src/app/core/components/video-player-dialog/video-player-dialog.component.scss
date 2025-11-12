@@ -1,0 +1,74 @@
+@import "video.js/dist/video-js.min.css";
+
+.video-container {
+  position: relative;
+  width: 100%;
+  background: black;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+video.video-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px;
+  background-color: black;
+}
+
+.vjs-control-bar {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.vjs-poster {
+  background-size: cover !important;
+  background-position: center !important;
+  transition: opacity 0.3s ease;
+}
+
+.vjs-theme-soria {
+  --vjs-theme-soria--primary: #fff;
+  --vjs-theme-soria--secondary: #fff;
+  --vjs-theme-soria--tertiary: #714FCA;
+  --font-color: rgb(27, 36, 52);
+  --control-bar-bg: rgba(255, 255, 255, 0.392);
+}
+
+.vjs-theme-soria .vjs-control-bar {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  padding: 0.5em !important;
+}
+
+.vjs-theme-soria .vjs-button > .vjs-icon-placeholder:before {
+  color: var(--vjs-theme-soria--primary);
+}
+
+.vjs-theme-soria .vjs-big-play-button {
+  width: 70px;
+  height: 70px;
+  background: none !important;
+  line-height: 70px;
+  font-size: 80px;
+  border: none;
+  top: 50%;
+  left: 50%;
+  margin-top: -35px;
+  margin-left: -35px;
+  color: var(--vjs-theme-soria--tertiary);
+}
+
+.vjs-theme-soria:hover .vjs-big-play-button,
+.vjs-theme-soria .vjs-big-play-button:focus {
+  background-color: transparent;
+  color: var(--vjs-theme-soria--primary)
+}
+
+.vjs-theme-soria .vjs-play-progress {
+  background-color: var(--vjs-theme-soria--tertiary) !important;
+}

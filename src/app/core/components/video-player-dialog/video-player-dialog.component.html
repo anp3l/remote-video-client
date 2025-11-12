@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>{{ data.video.title }}</h2>
+
+<mat-dialog-content class="!p-6">
+  <div class="space-y-4">
+    <div class="video-container">
+      <video
+        #videoPlayer
+        class="video-js vjs-theme-soria  vjs-show-big-play-button-on-pause"
+        playsinline
+        disablePictureInPicture
+      ></video>
+    </div>
+
+    <div class="space-y-3">
+      <div class="flex items-center gap-2 flex-wrap">
+        <mat-chip>{{ data.video.category }}</mat-chip>
+        @for (tag of data.video.tags; track tag) {
+          <mat-chip>{{ tag }}</mat-chip>
+        }
+      </div>
+
+      <p class="text-muted-foreground">
+        {{ data.video.description }}
+      </p>
+
+      <div class="flex items-center gap-6 text-sm text-muted-foreground pt-2 border-t">
+        <div class="flex items-center gap-2">
+          <mat-icon class="!text-sm !w-4 !h-4">schedule</mat-icon>
+          <span>{{ data.video.duration | durationFormat}}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <mat-icon class="!text-sm !w-4 !h-4">storage</mat-icon>
+          <span>{{ data.video.size }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <mat-icon class="!text-sm !w-4 !h-4">calendar_today</mat-icon>
+          <span>{{ data.video.uploadDate | date:'short' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="!p-6 !pt-0">
+  <button mat-button (click)="onClose()">Chiudi</button>
+</mat-dialog-actions>

@@ -1,0 +1,80 @@
+<header class="border-b bg-card sticky top-0 z-10 library-header">
+  <div class="container mx-auto px-4 py-4">
+    <!-- Title and Status -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
+          <mat-icon class="text-white">video_library</mat-icon>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="!m-0">Video Library</h1>
+          </div>
+          <p class="text-sm text-muted-foreground !m-0 !mt-1">
+            {{ videoCount }} video{{ videoCount !== 1 ? 's' : '' }} • 
+            {{ filteredCount }} visualizzat{{ filteredCount !== 1 ? 'i' : 'o' }}
+          </p>
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button mat-icon-button 
+                (click)="onRefreshClick()"
+                [disabled]="loading"
+                matTooltip="Ricarica">
+          <mat-icon [class.animate-spin]="loading">refresh</mat-icon>
+        </button>
+        
+        <button mat-raised-button 
+                color="primary"
+                (click)="onUploadClick()">
+          <mat-icon class="mr-2">upload</mat-icon>
+          Carica Video
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="flex flex-col sm:flex-row gap-3">
+      <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput 
+               placeholder="Cerca video..."
+               [ngModel]="searchQuery"
+               (ngModelChange)="onSearchChange($event)">
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="w-full sm:w-48" subscriptSizing="dynamic">
+        <mat-select [value]="categoryFilter"
+                    (selectionChange)="onCategoryChange($event.value)"
+                    placeholder="Tutte le Categorie">
+          <mat-option value="all">Tutte le Categorie</mat-option>
+          @for (cat of categories; track cat) {
+            <mat-option [value]="cat">{{ cat }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full sm:w-48" subscriptSizing="dynamic">
+        <mat-icon matPrefix>sort</mat-icon>
+        <mat-select [value]="sortBy"
+                    (selectionChange)="onSortChange($event.value)">
+          <mat-option value="date">Data Upload</mat-option>
+          <mat-option value="title">Titolo</mat-option>
+          <mat-option value="duration">Durata</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-button-toggle-group [value]="viewMode"
+                               (change)="onViewModeChange($event.value)">
+        <mat-button-toggle value="grid">
+          <mat-icon>grid_view</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="list">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+</header>

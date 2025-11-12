@@ -1,0 +1,72 @@
+<mat-card class="video-card">
+  @if (isVideoUploaded(video)) {
+    <div class="thumbnail-wrapper"
+         (click)="onPlay()">
+      <img [src]="resolveThumbnail(video)"
+           [alt]="video.title"
+           class="thumbnail-image"
+           (mouseenter)="swapToAnimated($event, video)"
+           (mouseleave)="swapToStatic($event, video)">
+      
+      <div class="duration-badge">
+        <mat-icon class="duration-icon">schedule</mat-icon>
+        {{ video.duration | durationFormat }}
+      </div>
+    </div>
+  
+    <mat-card-content class="card-content">
+      <!-- Title with menu button -->
+      <div class="title-row">
+        <h3 class="video-title">{{ video.title }}</h3>
+        <button mat-icon-button 
+                [matMenuTriggerFor]="menu" 
+                (click)="$event.stopPropagation()"
+                class="menu-button">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+      
+      <p class="video-description">
+        {{ video.description }}
+      </p>
+      
+      <div class="card-footer">
+        <mat-chip class="category-chip">{{ video.category }}</mat-chip>
+        <div class="metadata">
+          <span class="size-info">
+            <mat-icon class="metadata-icon">storage</mat-icon>
+            {{ video.size | fileSize}}
+          </span>
+          <span class="date-info">
+            {{ video.uploadDate | date:'short' }}
+          </span>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onPlay()">
+        <mat-icon>play_arrow</mat-icon>
+        <span>Play</span>
+      </button>
+      <button mat-menu-item (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        <span>Modifica</span>
+      </button>
+      <button mat-menu-item (click)="onDelete()" class="delete-item">
+        <mat-icon>delete</mat-icon>
+        <span>Elimina</span>
+      </button>
+    </mat-menu>
+    }
+  @else {
+    <div class="thumbnail-placeholder animate-pulse">
+      <div class="message-wrapper">
+        <p class="placeholder-text">
+          {{video.title || getVideoTitle(video)}} {{ 'processing' }}
+        </p>
+        <mat-icon class="processing-icon">hourglass_top</mat-icon>
+      </div>
+    </div>
+  }
+</mat-card>
