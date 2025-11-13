@@ -1,10 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Video, ViewMode } from '../../models/video.model';
 import { VideoCardComponent } from '../video-card/video-card.component';
+import { VideoService } from '../../services/video.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ import { VideoCardComponent } from '../video-card/video-card.component';
   styleUrls: ['./video-grid.component.scss']
 })
 export class VideoGridComponent {
+  private videoService = inject(VideoService);
   @Input({ required: true }) videos!: Video[];
   @Input({ required: true }) loading!: boolean;
   @Input({ required: true }) viewMode!: ViewMode;
@@ -31,6 +33,10 @@ export class VideoGridComponent {
   @Output() videoEdit = new EventEmitter<Video>();
   @Output() videoDelete = new EventEmitter<Video>();
   @Output() uploadClick = new EventEmitter<void>();
+
+  ngOnInit() {
+    this.videoService.loadVideos();
+  }
 
   onVideoPlay(video: Video): void {
     this.videoPlay.emit(video);

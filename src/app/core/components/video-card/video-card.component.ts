@@ -39,15 +39,10 @@ export class VideoCardComponent {
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
 
-  
-  
   private videoStatusCache = signal<Record<string, string>>({});
   private staticThumbnailCache = signal<Record<string, string>>({});
   private animatedThumbnailCache = signal<Record<string, string>>({});
-
   private pollingSubscriptions = new Map<string, Subscription>();
-  showOverlay = signal(false);
-
 
   onPlay(): void {
     this.play.emit();
@@ -69,7 +64,6 @@ export class VideoCardComponent {
     if (status === 'uploaded') return true;
 
     if (!this.pollingSubscriptions.has(id)) {
-      // Usa il tuo pollUntilUploaded esistente
       const sub = this.videoApiService.pollUntilUploaded(id, 10000).pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((newStatus) => {

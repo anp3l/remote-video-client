@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ElementRef, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -33,12 +33,19 @@ export class VideoUploadDialogComponent {
   private dialogRef = inject(MatDialogRef<VideoUploadDialogComponent>);
   private videoService = inject(VideoService);
 
+  // Ref to the submit animated button
+  submitButton = viewChild<ElementRef>('submitBtn');
+
   categories = CATEGORIES;
   videoFile = signal<File | null>(null);
   thumbnailFile = signal<File | null>(null);
   uploading = signal(false);
   validationError = signal<string | null>(null);
   isValidating = signal(false);
+  
+  // animation fly-to-corner
+  showFlyingIcon = signal(false);
+  flyingIconStyle = signal<any>({});
 
   uploadForm = this.fb.group({
     title: ['', Validators.required],
@@ -57,12 +64,10 @@ export class VideoUploadDialogComponent {
       return;
     }
 
-    // Reset previous state
     this.validationError.set(null);
     this.isValidating.set(true);
 
     try {
-      // Validate the video file
       const result = await this.videoService.validateVideoFile(file);
       
       if (result.valid) {
@@ -72,7 +77,7 @@ export class VideoUploadDialogComponent {
       } else {
         this.videoFile.set(null);
         this.validationError.set(result.reason || 'File non valido');
-        input.value = ''; // Reset input
+        input.value = '';
       }
     } catch (error) {
       console.error('Errore durante la validazione del video:', error);
@@ -94,6 +99,12 @@ export class VideoUploadDialogComponent {
 
   async onSubmit(): Promise<void> {
     if (this.uploadForm.valid && this.videoFile()) {
+      // Trigger fly animation before upload
+      this.triggerFlyAnimation();
+      
+      // Wait for animation
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       this.uploading.set(true);
       
       const tags = this.uploadForm.value.tags!
@@ -114,12 +125,49 @@ export class VideoUploadDialogComponent {
           this.thumbnailFile(),
           metadata
         );
+        
+        // Wait until the animation ends before closing
+        await new Promise(resolve => setTimeout(resolve, 600));
+        
         this.dialogRef.close(true);
       } catch (error) {
         console.error('Upload error:', error);
         this.uploading.set(false);
+        this.showFlyingIcon.set(false);
       }
     }
+  }
+
+  private triggerFlyAnimation(): void {
+    const button = this.submitButton()?.nativeElement;
+    if (!button) return;
+
+    // Obtaion position
+    const rect = button.getBoundingClientRect();
+    
+    // Starting position
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2;
+    
+    // Arrival position
+    const endX = window.innerWidth - 220; // Posizione del popup
+    const endY = window.innerHeight - 50;
+    
+    // Initial style
+    this.flyingIconStyle.set({
+      left: `${startX}px`,
+      top: `${startY}px`,
+      '--end-x': `${endX - startX}px`,
+      '--end-y': `${endY - startY}px`
+    });
+    
+    // Show the icon
+    this.showFlyingIcon.set(true);
+    
+    // Hide after animation
+    setTimeout(() => {
+      this.showFlyingIcon.set(false);
+    }, 800);
   }
 
   onCancel(): void {

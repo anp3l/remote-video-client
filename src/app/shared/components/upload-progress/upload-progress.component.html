@@ -1,0 +1,81 @@
+@if (uploadService.hasActiveUploads()) {
+  <div class="upload-progress-container" 
+       [class.expanded]="isExpanded()"
+       animate.enter="slide-up">
+    
+    <!-- Header sempre visibile -->
+    <div class="upload-header" (click)="toggleExpand()">
+      <div class="header-left">
+        <mat-icon class="expand-icon" [class.rotated]="isExpanded()">
+          expand_less
+        </mat-icon>
+        <span class="upload-title">
+          {{ uploadService.inProgressCount() }} 
+          {{ uploadService.inProgressCount() === 1 ? 'video in caricamento' : 'video in caricamento' }}
+        </span>
+      </div>
+      
+      <div class="header-actions">
+        @if (uploadService.inProgressCount() === 0 && uploadService.uploadCount() > 0) {
+          <button mat-icon-button 
+                  (click)="uploadService.clearCompleted(); $event.stopPropagation()"
+                  class="clear-btn">
+            <mat-icon>clear_all</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Lista upload (visibile quando espansa) -->
+    @if (isExpanded()) {
+      <div class="upload-list" animate.enter="expand-down">
+        @for (upload of uploadService.activeUploads(); track upload.id) {
+          <div class="upload-item" 
+               animate.enter="slide-fade-in"
+               animate.leave="slide-fade-out">
+            <div class="upload-info">
+              <mat-icon [class]="'status-icon ' + getStatusColor(upload.status)">
+                {{ getStatusIcon(upload.status) }}
+              </mat-icon>
+              
+              <div class="upload-details">
+                <div class="upload-name">{{ upload.title || upload.fileName }}</div>
+                <div class="upload-status">
+                  @switch (upload.status) {
+                    @case ('uploading') {
+                      <span>Caricamento in corso...</span>
+                    }
+                    @case ('processing') {
+                      <span>Elaborazione video...</span>
+                    }
+                    @case ('uploaded') {
+                      <span class="success">Completato!</span>
+                    }
+                    @case ('error') {
+                      <span class="error">{{ upload.errorMessage || 'Errore' }}</span>
+                    }
+                  }
+                </div>
+              </div>
+
+              @if (upload.status === 'uploaded') {
+                <button mat-icon-button 
+                        (click)="removeUpload(upload.id)"
+                        class="remove-btn">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
+            </div>
+
+            @if (upload.status === 'uploading' || upload.status === 'processing') {
+              <mat-progress-bar 
+                mode="indeterminate" 
+                [color]="getStatusColor(upload.status)">
+              </mat-progress-bar>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

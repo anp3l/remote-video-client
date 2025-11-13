@@ -11,9 +11,6 @@ import { VideoEditDialogComponent } from '../video-edit-dialog/video-edit-dialog
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
 
-// Shared components
-import { AppFooterComponent } from '../../../shared/components/app-footer/app-footer.component';
-
 @Component({
   selector: 'app-video-library',
   standalone: true,
@@ -21,7 +18,6 @@ import { AppFooterComponent } from '../../../shared/components/app-footer/app-fo
     CommonModule,
     LibraryHeaderComponent,
     VideoGridComponent,
-    AppFooterComponent
   ],
   templateUrl: './video-library.component.html',
   styleUrls: ['./video-library.component.scss']

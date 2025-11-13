@@ -1,8 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Video, VideoMetadata } from '../models/video.model';
 import { VideoApiService } from './video-api.service';
+import { UploadProgressService } from './upload-progress.service';
 import { AppConfig, MB_TO_BYTES } from '../config/app.config';
 
 export interface VideoValidationResult {
@@ -18,6 +18,7 @@ export interface VideoValidationResult {
 export class VideoService {
   private videoApi = inject(VideoApiService);
   private snackBar = inject(MatSnackBar);
+  private uploadProgressService = inject(UploadProgressService); // ← AGGIUNGI QUESTO
   private readonly MAX_SIZE_BYTES = AppConfig.maxVideoSizeMB * MB_TO_BYTES;
   private readonly MAX_DURATION_SECONDS = AppConfig.maxVideoDurationSeconds;
 
@@ -32,9 +33,7 @@ export class VideoService {
     return Array.from(cats);
   });
 
-  constructor() {
-      this.loadVideos();
-  }
+  constructor() {}
 
   loadVideos(): void {
     this.loading.set(true);
@@ -64,16 +63,38 @@ export class VideoService {
     thumbnailFile: File | null,
     metadata: VideoMetadata
   ): Promise<Video> {
+    // Generate a temporary ID to track the upload
+    const tempId = `temp_${Date.now()}`;
+    
+    // Registry the upload
+    this.uploadProgressService.addUpload(tempId, videoFile.name, metadata.title);
+
     return new Promise((resolve, reject) => {
       this.videoApi.uploadVideo(videoFile, thumbnailFile, metadata).subscribe({
         next: (newVideo) => {
+          // Update the upload progress
+          this.uploadProgressService.updateProgress(tempId, {
+            id: newVideo.id,
+            status: 'processing'
+          });
+
           this.videos.update(current => [newVideo, ...current]);
-          this.snackBar.open('Video caricato con successo!', 'Chiudi', {
+          
+          //Monitoring video processing
+          this.monitorVideoProcessing(newVideo.id, tempId);
+          
+          this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
             duration: 3000
           });
+          
           resolve(newVideo);
         },
         error: (error) => {
+          this.uploadProgressService.updateProgress(tempId, {
+            status: 'error',
+            errorMessage: 'Errore durante il caricamento'
+          });
+          
           this.snackBar.open('Errore durante il caricamento', 'Chiudi', {
             duration: 5000
           });
@@ -83,10 +104,34 @@ export class VideoService {
     });
   }
 
-  /**
-   * Validates a video file before upload
-   * Checks: file type, size, duration, and codec compatibility
-   */
+  private monitorVideoProcessing(videoId: string, uploadId: string): void {
+    
+    this.videoApi.pollUntilUploaded(videoId, 10000).subscribe({
+      next: (status) => {
+        
+        if (status === 'uploaded') {
+          
+          // Aggiorna lo stato a "uploaded"
+          this.uploadProgressService.updateProgress(uploadId, {
+            status: 'uploaded'
+          });
+          
+          // Rimuovi dall'elenco dopo 3 secondi
+          setTimeout(() => {
+            this.uploadProgressService.removeUpload(uploadId);
+          }, 3000);
+        }
+      },
+      error: (error) => {
+        
+        this.uploadProgressService.updateProgress(uploadId, {
+          status: 'error',
+          errorMessage: 'Errore durante l\'elaborazione'
+        });
+      }
+    });
+  }
+
   validateVideoFile(
     file: File,
     maxSize = this.MAX_SIZE_BYTES,
@@ -105,13 +150,13 @@ export class VideoService {
 
       // 2. Check if the MIME type is supported
       if (!this.isSupportedVideoFormat(file.type)) {
-          resolve({
-            file,
-            valid: false,
-            reason: `Formato video non supportato. Formati accettati: ${AppConfig.supportedVideoExtensions.join(', ').toUpperCase()}`,
-          });
-          return;
-        }
+        resolve({
+          file,
+          valid: false,
+          reason: `Formato video non supportato. Formati accettati: ${AppConfig.supportedVideoExtensions.join(', ').toUpperCase()}`,
+        });
+        return;
+      }
 
       // 3. Create video element to extract metadata
       const video = document.createElement('video');
@@ -224,23 +269,16 @@ export class VideoService {
     if (minutes > 0) {
       parts.push(`${minutes} ${minutes === 1 ? 'minuto' : 'minuti'}`);
     }
-    if (secs > 0 && hours === 0) { // Mostra i secondi solo se non ci sono ore
+    if (secs > 0 && hours === 0) {
       parts.push(`${secs} ${secs === 1 ? 'secondo' : 'secondi'}`);
     }
 
     return parts.join(' e ') || '0 secondi';
   }
 
-  /**
-   * Type guard to check if a string is a supported video format
-   */
   private isSupportedVideoFormat(
     type: string
   ): type is typeof AppConfig.supportedVideoFormats[number] {
     return (AppConfig.supportedVideoFormats as readonly string[]).includes(type);
   }
-
 }
-
-
-

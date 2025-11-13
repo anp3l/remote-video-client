@@ -1,0 +1,242 @@
+.upload-progress-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 400px;
+  max-width: calc(100vw - 40px);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 1000;
+  
+  // Animazione di entrata fluida
+  &.slide-up {
+    animation: slideUp 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes expandDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+@keyframes slideFadeIn {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFadeOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+}
+
+.upload-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #555 0%, #888 100%);
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, #666 0%, #999 100%);
+  }
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  .expand-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.upload-title {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.upload-list {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 8px;
+  
+  // Smooth scroll
+  scroll-behavior: smooth;
+  
+  &.expand-down {
+    animation: expandDown 300ms ease-out;
+  }
+  
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    
+    &:hover {
+      background: #555;
+    }
+  }
+}
+
+.upload-item {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  background: white;
+  transition: background 0.2s ease;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background: #f9f9f9;
+  }
+  
+  // Animazioni enter/leave usando le nuove API di Angular 20
+  &.slide-fade-in {
+    animation: slideFadeIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  &.slide-fade-out {
+    animation: slideFadeOut 300ms ease-in forwards;
+  }
+}
+
+.upload-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.status-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  
+  // Animazione pulsante per il processing
+  &.accent {
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  &.primary { color: #888; }
+  &.accent { color: #ff9800; }
+  &.success { color: #4caf50; }
+  &.warn { color: #f44336; }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+.upload-details {
+  flex: 1;
+  min-width: 0; // Permette ellipsis
+}
+
+.upload-name {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #333;
+}
+
+.upload-status {
+  font-size: 12px;
+  color: #666;
+  
+  .success { 
+    color: #4caf50;
+    font-weight: 500;
+  }
+  .error { 
+    color: #f44336;
+    font-weight: 500;
+  }
+}
+
+.remove-btn, .clear-btn {
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+// Transizione smooth per l'espansione
+.expanded {
+  .upload-list {
+    transition: max-height 0.3s ease-out;
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .upload-progress-container {
+    width: calc(100vw - 40px);
+    right: 20px;
+  }
+}

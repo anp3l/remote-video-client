@@ -21,3 +21,39 @@
     }
   }
 }
+
+// ANIMATION FLY-TO-CORNER
+.flying-icon {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #667eea;
+    filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.4));
+    animation: flyToCorner 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+}
+
+@keyframes flyToCorner {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  
+  50% {
+    transform: translate(
+      calc(var(--end-x) * 0.5), 
+      calc(var(--end-y) * 0.3)
+    ) scale(0.7) rotate(180deg);
+    opacity: 0.8;
+  }
+  
+  100% {
+    transform: translate(var(--end-x), var(--end-y)) scale(0.3) rotate(360deg);
+    opacity: 0;
+  }
+}

@@ -99,10 +99,18 @@
   <button mat-raised-button 
           color="primary"
           (click)="onSubmit()"
-          [disabled]="!uploadForm.valid || !videoFile() || uploading()">
+          [disabled]="!uploadForm.valid || !videoFile() || uploading()"
+          #submitBtn>
     @if (uploading()) {
       <mat-spinner diameter="20" class="mr-2 inline-block"></mat-spinner>
     }
     {{ uploading() ? 'Caricamento...' : 'Carica Video' }}
   </button>
 </mat-dialog-actions>
+
+<!-- Flying icon -->
+@if (showFlyingIcon()) {
+  <div class="flying-icon" [style]="flyingIconStyle()">
+    <mat-icon>videocam</mat-icon>
+  </div>
+}
