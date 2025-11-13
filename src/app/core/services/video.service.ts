@@ -63,7 +63,6 @@ export class VideoService {
     thumbnailFile: File | null,
     metadata: VideoMetadata
   ): Promise<Video> {
-    // Generate a temporary ID to track the upload
     const tempId = `temp_${Date.now()}`;
     
     // Registry the upload
@@ -71,23 +70,31 @@ export class VideoService {
 
     return new Promise((resolve, reject) => {
       this.videoApi.uploadVideo(videoFile, thumbnailFile, metadata).subscribe({
-        next: (newVideo) => {
-          // Update the upload progress
-          this.uploadProgressService.updateProgress(tempId, {
-            id: newVideo.id,
-            status: 'processing'
-          });
+        next: (event) => {
+          if (event.type === 'progress') {
+            //Update progress percentage
+            this.uploadProgressService.updateProgress(tempId, {
+              progress: event.progress!
+            });
+          } else if (event.type === 'complete') {
+            // Upload completed        
+            const newVideo = event.video!;
+            this.uploadProgressService.updateProgress(tempId, {
+              id: newVideo.id,
+              status: 'uploaded',
+              progress: 100
+            });
 
-          this.videos.update(current => [newVideo, ...current]);
-          
-          //Monitoring video processing
-          this.monitorVideoProcessing(newVideo.id, tempId);
-          
-          this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
-            duration: 3000
-          });
-          
-          resolve(newVideo);
+            this.videos.update(current => [newVideo, ...current]);
+            
+            this.uploadProgressService.removeUpload(tempId);
+            
+            this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
+              duration: 3000
+            });
+            
+            resolve(newVideo);
+          }
         },
         error: (error) => {
           this.uploadProgressService.updateProgress(tempId, {
@@ -101,34 +108,6 @@ export class VideoService {
           reject(error);
         }
       });
-    });
-  }
-
-  private monitorVideoProcessing(videoId: string, uploadId: string): void {
-    
-    this.videoApi.pollUntilUploaded(videoId, 10000).subscribe({
-      next: (status) => {
-        
-        if (status === 'uploaded') {
-          
-          // Aggiorna lo stato a "uploaded"
-          this.uploadProgressService.updateProgress(uploadId, {
-            status: 'uploaded'
-          });
-          
-          // Rimuovi dall'elenco dopo 3 secondi
-          setTimeout(() => {
-            this.uploadProgressService.removeUpload(uploadId);
-          }, 3000);
-        }
-      },
-      error: (error) => {
-        
-        this.uploadProgressService.updateProgress(uploadId, {
-          status: 'error',
-          errorMessage: 'Errore durante l\'elaborazione'
-        });
-      }
     });
   }
 

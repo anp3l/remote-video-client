@@ -1,10 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient , HttpEventType, HttpEvent} from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
-import { map, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { map, switchMap, takeWhile, tap, filter } from 'rxjs/operators';
 import { Video, VideoMetadata } from '../models/video.model';
 import { AppConfig } from '../config/app.config';
 
+export interface UploadProgressEvent {
+  type: 'progress' | 'complete';
+  progress?: number;
+  video?: Video;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -39,39 +44,60 @@ export class VideoApiService {
   }
 
   uploadVideo(
-    videoFile: File,
-    thumbnailFile: File | null,
-    metadata: VideoMetadata
-  ): Observable<Video> {
-    const formData = new FormData();
-    formData.append('videos', videoFile);
-    if (thumbnailFile) {
-      formData.append('thumbnail', thumbnailFile);
-    }
-    formData.append('title', metadata.title);
-    formData.append('description', metadata.description);
-    formData.append('category', metadata.category);
-    formData.append('tags', JSON.stringify(metadata.tags));
+      videoFile: File,
+      thumbnailFile: File | null,
+      metadata: VideoMetadata
+    ): Observable<UploadProgressEvent> {
+      const formData = new FormData();
+      formData.append('videos', videoFile);
+      if (thumbnailFile) {
+        formData.append('thumbnail', thumbnailFile);
+      }
+      formData.append('title', metadata.title);
+      formData.append('description', metadata.description);
+      formData.append('category', metadata.category);
+      formData.append('tags', JSON.stringify(metadata.tags));
 
-    return this.http.post<any>(`${this.apiUrl}/videos`, formData).pipe(
-      map(response => {
-        const videoData = response.ops?.[0] || response;
-        
-        return {
-          id: videoData._id,
-          title: videoData.title,
-          description: videoData.description,
-          thumbnail: videoData.thumbnail || `/videos/thumb/static/${videoData._id}`,
-          videoUrl: videoData.videoUrl || `/videos/stream/${videoData._id}`,
-          duration: videoData.duration || 0,
-          uploadDate: new Date(videoData.createdAt || videoData.uploadDate),
-          size: videoData.size,
-          category: videoData.category,
-          tags: videoData.tags
-        };
-      })
-    );
-  }
+      return this.http.post<any>(`${this.apiUrl}/videos`, formData, {
+        reportProgress: true,  // abilita il tracking del progresso
+        observe: 'events'      // osserva gli eventi invece della risposta
+      }).pipe(
+        map((event: HttpEvent<any>) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            // Evento di progresso
+            const progress = event.total 
+              ? Math.round((100 * event.loaded) / event.total)
+              : 0;
+            
+            return {
+              type: 'progress' as const,
+              progress
+            };
+          } else if (event.type === HttpEventType.Response) {
+            const videoData = event.body.ops?.[0] || event.body;
+            
+            return {
+              type: 'complete' as const,
+              video: {
+                id: videoData._id,
+                title: videoData.title,
+                description: videoData.description,
+                thumbnail: videoData.thumbnail || `/videos/thumb/static/${videoData._id}`,
+                videoUrl: videoData.videoUrl || `/videos/stream/${videoData._id}`,
+                duration: videoData.duration || 0,
+                uploadDate: new Date(videoData.createdAt || videoData.uploadDate),
+                size: videoData.size,
+                category: videoData.category,
+                tags: videoData.tags
+              }
+            };
+          }
+          
+          return { type: 'progress' as const, progress: 0 };
+        }),
+        filter(event => event.type === 'progress' || event.type === 'complete')
+      );
+    }
 
   updateVideo(id: string, updates: Partial<VideoMetadata>): Observable<Video> {
     return this.http.patch<any>(`${this.apiUrl}/videos/${id}`, updates).pipe(  // <-- PATCH

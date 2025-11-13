@@ -4,8 +4,8 @@ export interface UploadProgress {
   id: string;
   fileName: string;
   title: string;
-  status: 'uploading' | 'processing' | 'uploaded' | 'error';
-  thumbnailBlob?: string;
+  status: 'uploading' | 'uploaded' | 'error';
+  progress?: number;
   errorMessage?: string;
   startTime: Date;
 }
@@ -18,9 +18,6 @@ export class UploadProgressService {
 
   activeUploads = computed(() => Array.from(this.uploads().values()));
   uploadCount = computed(() => this.activeUploads().length);
-  inProgressCount = computed(() => 
-    this.activeUploads().filter(u => u.status === 'uploading' || u.status === 'processing').length
-  );
   hasActiveUploads = computed(() => this.uploadCount() > 0);
 
   addUpload(id: string, fileName: string, title: string): void {
@@ -31,6 +28,7 @@ export class UploadProgressService {
         fileName,
         title,
         status: 'uploading',
+        progress: 0,
         startTime: new Date()
       });
       return newMap;
@@ -60,7 +58,7 @@ export class UploadProgressService {
     this.uploads.update(map => {
       const newMap = new Map();
       map.forEach((upload, id) => {
-        if (upload.status === 'processing' || upload.status === 'uploading') {
+        if (upload.status === 'uploading') {
           newMap.set(id, upload);
         }
       });

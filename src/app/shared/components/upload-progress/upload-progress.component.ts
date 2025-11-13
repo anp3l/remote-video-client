@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,10 @@ import { UploadProgressService } from '../../../core/services/upload-progress.se
 export class UploadProgressComponent {
   uploadService = inject(UploadProgressService);
   isExpanded = signal(false);
+
+  uploadingUploads = computed(() =>
+    this.uploadService.activeUploads().filter(u => u.status === 'uploading')
+  );
 
   toggleExpand(): void {
     this.isExpanded.update(v => !v);
