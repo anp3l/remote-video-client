@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .upload-progress-container {
   position: fixed;
   bottom: 20px;
@@ -9,13 +13,14 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   z-index: 1000;
+  transition: box-shadow 0.3s ease;
   
-  // Animazione di entrata fluida
-  &.slide-up {
-    animation: slideUp 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  &:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   }
 }
 
+// Animazioni keyframes
 @keyframes slideUp {
   from {
     transform: translateY(100%) scale(0.9);
@@ -60,6 +65,18 @@
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+// Header
 .upload-header {
   display: flex;
   justify-content: space-between;
@@ -69,10 +86,14 @@
   color: white;
   cursor: pointer;
   user-select: none;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   
   &:hover {
     background: linear-gradient(135deg, #666 0%, #999 100%);
+  }
+  
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -83,6 +104,9 @@
   
   .expand-icon {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
     
     &.rotated {
       transform: rotate(180deg);
@@ -94,20 +118,43 @@
   font-weight: 600;
   font-size: 14px;
   letter-spacing: 0.3px;
+  line-height: 1.4;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.clear-btn {
+  color: white !important;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+  
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+// Lista upload
 .upload-list {
   max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 8px;
+  background: #fafafa;
   
   // Smooth scroll
   scroll-behavior: smooth;
-  
-  &.expand-down {
-    animation: expandDown 300ms ease-out;
-  }
   
   // Custom scrollbar
   &::-webkit-scrollbar {
@@ -120,39 +167,64 @@
   }
   
   &::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #bbb;
     border-radius: 10px;
+    transition: background 0.2s ease;
     
     &:hover {
-      background: #555;
+      background: #888;
     }
   }
 }
 
+// Upload item
 .upload-item {
   padding: 12px;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+  border-radius: 8px;
   background: white;
-  transition: background 0.2s ease;
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #667eea;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
   }
   
   &:hover {
     background: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
   }
   
-  // Animazioni enter/leave usando le nuove API di Angular 20
-  &.slide-fade-in {
-    animation: slideFadeIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  // Upload in corso - blu
+  &:not(.completed):not(.failed) {
+    border-left-color: #667eea;
   }
   
-  &.slide-fade-out {
-    animation: slideFadeOut 300ms ease-in forwards;
+  // Upload completato - verde
+  &.completed {
+    background: linear-gradient(to right, #f1f8f4 0%, #ffffff 100%);
+    border-left-color: #4caf50;
+    
+    &:hover {
+      background: linear-gradient(to right, #e8f5e9 0%, #f9f9f9 100%);
+    }
+  }
+  
+  // Upload fallito - rosso
+  &.failed {
+    background: linear-gradient(to right, #fff5f5 0%, #ffffff 100%);
+    border-left-color: #f44336;
+    
+    &:hover {
+      background: linear-gradient(to right, #ffebee 0%, #f9f9f9 100%);
+    }
   }
 }
 
+// Upload info row
 .upload-info {
   display: flex;
   align-items: center;
@@ -160,36 +232,34 @@
   margin-bottom: 8px;
 }
 
+// Status icon
 .status-icon {
   font-size: 24px;
   width: 24px;
   height: 24px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
   
-  // Animazione pulsante per il processing
-  &.accent {
+  // Colori per stato
+  &.primary { 
+    color: #667eea;
     animation: pulse 2s ease-in-out infinite;
   }
   
-  &.primary { color: #888; }
-  &.accent { color: #ff9800; }
-  &.success { color: #4caf50; }
-  &.warn { color: #f44336; }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
+  &.success { 
+    color: #4caf50;
   }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.8;
+  
+  &.warn { 
+    color: #f44336;
   }
 }
 
+// Upload details
 .upload-details {
   flex: 1;
   min-width: 0; // Permette ellipsis
+  overflow: hidden;
 }
 
 .upload-name {
@@ -200,36 +270,80 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: #333;
+  line-height: 1.3;
 }
 
 .upload-status {
   font-size: 12px;
   color: #666;
+  line-height: 1.3;
   
   .success { 
     color: #4caf50;
     font-weight: 500;
   }
+  
   .error { 
     color: #f44336;
     font-weight: 500;
   }
 }
 
-.remove-btn, .clear-btn {
-  opacity: 0.7;
+// Remove button
+.remove-btn {
+  flex-shrink: 0;
+  opacity: 0.6;
   transition: all 0.2s ease;
+  color: #999 !important;
+  
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
   
   &:hover {
     opacity: 1;
-    transform: scale(1.1);
+    transform: scale(1.15);
+    color: #f44336 !important;
+    background-color: rgba(244, 67, 54, 0.1);
+  }
+}
+
+// Progress bar customization
+::ng-deep {
+  .upload-item {
+    mat-progress-bar {
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      
+      .mdc-linear-progress__bar-inner {
+        border-radius: 3px;
+        transition: transform 0.3s ease;
+      }
+      
+      // Primary color per upload in corso
+      &[color="primary"] {
+        .mdc-linear-progress__bar-inner {
+          background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+      }
+      
+      // Accent color per upload completato
+      &[color="accent"] {
+        .mdc-linear-progress__bar-inner {
+          background: linear-gradient(90deg, #4caf50 0%, #8bc34a 100%);
+        }
+      }
+    }
   }
 }
 
 // Transizione smooth per l'espansione
 .expanded {
   .upload-list {
-    transition: max-height 0.3s ease-out;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
   }
 }
 
@@ -238,5 +352,34 @@
   .upload-progress-container {
     width: calc(100vw - 40px);
     right: 20px;
+    bottom: 20px;
+  }
+  
+  .upload-header {
+    padding: 12px 14px;
+  }
+  
+  .upload-title {
+    font-size: 13px;
+  }
+  
+  .upload-item {
+    padding: 10px;
+  }
+  
+  .upload-name {
+    font-size: 13px;
+  }
+  
+  .upload-status {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .upload-progress-container {
+    width: calc(100vw - 20px);
+    right: 10px;
+    bottom: 10px;
   }
 }

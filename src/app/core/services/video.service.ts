@@ -65,30 +65,32 @@ export class VideoService {
   ): Promise<Video> {
     const tempId = `temp_${Date.now()}`;
     
-    // Registry the upload
+    // Register the upload
     this.uploadProgressService.addUpload(tempId, videoFile.name, metadata.title);
 
     return new Promise((resolve, reject) => {
       this.videoApi.uploadVideo(videoFile, thumbnailFile, metadata).subscribe({
         next: (event) => {
           if (event.type === 'progress') {
-            //Update progress percentage
+            // Update progress percentage
             this.uploadProgressService.updateProgress(tempId, {
               progress: event.progress!
             });
           } else if (event.type === 'complete') {
-            // Upload completed        
+            // Upload completed - server responded with videoStatus: "inProgress"
             const newVideo = event.video!;
+            
+            // Update to 100% and mark as uploaded
             this.uploadProgressService.updateProgress(tempId, {
               id: newVideo.id,
               status: 'uploaded',
               progress: 100
             });
 
+            // Add video to list (will show with videoStatus: "inProgress" in app-card)
             this.videos.update(current => [newVideo, ...current]);
             
-            this.uploadProgressService.removeUpload(tempId);
-            
+            // Show success message
             this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
               duration: 3000
             });
@@ -99,12 +101,13 @@ export class VideoService {
         error: (error) => {
           this.uploadProgressService.updateProgress(tempId, {
             status: 'error',
-            errorMessage: 'Errore durante il caricamento'
+            errorMessage: error.message || 'Errore durante il caricamento'
           });
           
           this.snackBar.open('Errore durante il caricamento', 'Chiudi', {
             duration: 5000
           });
+          
           reject(error);
         }
       });

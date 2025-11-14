@@ -1,11 +1,12 @@
 import { Injectable, signal, computed } from '@angular/core';
 
 export interface UploadProgress {
-  id: string;
+  id: string;           // ID definitivo dal server (vuoto inizialmente)
+  tempId: string;       // ID temporaneo usato per tracciare l'upload
   fileName: string;
   title: string;
   status: 'uploading' | 'uploaded' | 'error';
-  progress?: number;
+  progress: number;
   errorMessage?: string;
   startTime: Date;
 }
@@ -19,12 +20,26 @@ export class UploadProgressService {
   activeUploads = computed(() => Array.from(this.uploads().values()));
   uploadCount = computed(() => this.activeUploads().length);
   hasActiveUploads = computed(() => this.uploadCount() > 0);
+  
+  // Count by status
+  uploadingCount = computed(() => 
+    this.activeUploads().filter(u => u.status === 'uploading').length
+  );
+  
+  uploadedCount = computed(() => 
+    this.activeUploads().filter(u => u.status === 'uploaded').length
+  );
+  
+  errorCount = computed(() => 
+    this.activeUploads().filter(u => u.status === 'error').length
+  );
 
-  addUpload(id: string, fileName: string, title: string): void {
+  addUpload(tempId: string, fileName: string, title: string): void {
     this.uploads.update(map => {
       const newMap = new Map(map);
-      newMap.set(id, {
-        id,
+      newMap.set(tempId, {
+        id: '',
+        tempId,
         fileName,
         title,
         status: 'uploading',
@@ -35,21 +50,21 @@ export class UploadProgressService {
     });
   }
 
-  updateProgress(id: string, updates: Partial<UploadProgress>): void {
+  updateProgress(tempId: string, updates: Partial<UploadProgress>): void {
     this.uploads.update(map => {
       const newMap = new Map(map);
-      const existing = newMap.get(id);
+      const existing = newMap.get(tempId);
       if (existing) {
-        newMap.set(id, { ...existing, ...updates });
+        newMap.set(tempId, { ...existing, ...updates });
       }
       return newMap;
     });
   }
 
-  removeUpload(id: string): void {
+  removeUpload(tempId: string): void {
     this.uploads.update(map => {
       const newMap = new Map(map);
-      newMap.delete(id);
+      newMap.delete(tempId);
       return newMap;
     });
   }
@@ -57,12 +72,16 @@ export class UploadProgressService {
   clearCompleted(): void {
     this.uploads.update(map => {
       const newMap = new Map();
-      map.forEach((upload, id) => {
+      map.forEach((upload, key) => {
         if (upload.status === 'uploading') {
-          newMap.set(id, upload);
+          newMap.set(key, upload);
         }
       });
       return newMap;
     });
+  }
+
+  clearAll(): void {
+    this.uploads.set(new Map());
   }
 }

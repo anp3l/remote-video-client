@@ -21,9 +21,6 @@ export class UploadProgressComponent {
   uploadService = inject(UploadProgressService);
   isExpanded = signal(false);
 
-  uploadingUploads = computed(() =>
-    this.uploadService.activeUploads().filter(u => u.status === 'uploading')
-  );
 
   toggleExpand(): void {
     this.isExpanded.update(v => !v);
@@ -32,7 +29,6 @@ export class UploadProgressComponent {
   getStatusIcon(status: string): string {
     switch (status) {
       case 'uploading': return 'cloud_upload';
-      case 'processing': return 'hourglass_top';
       case 'uploaded': return 'check_circle';
       case 'error': return 'error';
       default: return 'help';
@@ -42,14 +38,10 @@ export class UploadProgressComponent {
   getStatusColor(status: string): string {
     switch (status) {
       case 'uploading': return 'primary';
-      case 'processing': return 'accent';
       case 'uploaded': return 'success';
       case 'error': return 'warn';
       default: return '';
     }
   }
 
-  removeUpload(id: string): void {
-    this.uploadService.removeUpload(id);
-  }
 }

@@ -93,18 +93,15 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end" class="!p-6 !pt-0">
-  <button mat-button (click)="onCancel()" [disabled]="uploading()">
+  <button mat-button (click)="onCancel()">
     Annulla
   </button>
   <button mat-raised-button 
           color="primary"
           (click)="onSubmit()"
-          [disabled]="!uploadForm.valid || !videoFile() || uploading()"
+          [disabled]="!uploadForm.valid || !videoFile()"
           #submitBtn>
-    @if (uploading()) {
-      <mat-spinner diameter="20" class="mr-2 inline-block"></mat-spinner>
-    }
-    {{ uploading() ? 'Caricamento...' : 'Carica Video' }}
+    Carica Video
   </button>
 </mat-dialog-actions>
 

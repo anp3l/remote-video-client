@@ -5,7 +5,7 @@ export const AppConfig = {
   
   // Video validation
   maxVideoSizeMB: 2048,
-  maxVideoDurationSeconds: 1800, 
+  maxVideoDurationSeconds: 3600, 
   supportedVideoFormats: [
     'video/mp4',
     'video/quicktime',      // MOV

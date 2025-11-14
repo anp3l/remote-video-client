@@ -99,13 +99,8 @@ export class VideoUploadDialogComponent {
 
   async onSubmit(): Promise<void> {
     if (this.uploadForm.valid && this.videoFile()) {
-      // Trigger fly animation before upload
+      // Trigger fly animation before closing
       this.triggerFlyAnimation();
-      
-      // Wait for animation
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      this.uploading.set(true);
       
       const tags = this.uploadForm.value.tags!
         .split(',')
@@ -119,22 +114,22 @@ export class VideoUploadDialogComponent {
         tags
       };
 
-      try {
-        await this.videoService.uploadVideo(
-          this.videoFile()!,
-          this.thumbnailFile(),
-          metadata
-        );
-        
-        // Wait until the animation ends before closing
-        await new Promise(resolve => setTimeout(resolve, 600));
-        
-        this.dialogRef.close(true);
-      } catch (error) {
+      // Start upload in background (non-blocking)
+      this.videoService.uploadVideo(
+        this.videoFile()!,
+        this.thumbnailFile(),
+        metadata
+      ).catch(error => {
         console.error('Upload error:', error);
-        this.uploading.set(false);
-        this.showFlyingIcon.set(false);
-      }
+      });
+      
+      // Small delay to let the animation start, then close dialog
+      setTimeout(() => {
+        this.dialogRef.close({ 
+          started: true,
+          metadata 
+        });
+      }, 150);
     }
   }
 
@@ -142,18 +137,25 @@ export class VideoUploadDialogComponent {
     const button = this.submitButton()?.nativeElement;
     if (!button) return;
 
-    // Obtaion position
+    // Get button position
     const rect = button.getBoundingClientRect();
     
-    // Starting position
+    // Starting position (center of button)
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2;
     
-    // Arrival position
-    const endX = window.innerWidth - 220; // Posizione del popup
-    const endY = window.innerHeight - 50;
+    // End position calculation based on upload-progress bar position:
+    // Fixed position: bottom: 20px, right: 20px, width: 400px
+    // Target: center of the upload-progress header
+    const uploadProgressWidth = Math.min(400, window.innerWidth - 40);
+    const uploadProgressRight = 20;
+    const uploadProgressBottom = 20;
     
-    // Initial style
+    // Center of upload-progress header (approx 46px tall based on padding + text)
+    const endX = window.innerWidth - uploadProgressRight - (uploadProgressWidth / 2);
+    const endY = window.innerHeight - uploadProgressBottom - 23; // 23px = half of header height
+    
+    // Initial style with CSS variables for animation
     this.flyingIconStyle.set({
       left: `${startX}px`,
       top: `${startY}px`,
@@ -164,7 +166,7 @@ export class VideoUploadDialogComponent {
     // Show the icon
     this.showFlyingIcon.set(true);
     
-    // Hide after animation
+    // Hide after animation completes
     setTimeout(() => {
       this.showFlyingIcon.set(false);
     }, 800);

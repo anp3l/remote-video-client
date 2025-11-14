@@ -10,16 +10,21 @@
           expand_less
         </mat-icon>
         <span class="upload-title">
-          {{ uploadService.uploadCount() }} 
-          {{ uploadService.uploadCount() === 1 ? 'video in caricamento' : 'video in caricamento' }}
+          @if (uploadService.uploadingCount() > 0) {
+            {{ uploadService.uploadingCount() }} 
+            {{ uploadService.uploadingCount() === 1 ? 'video in caricamento' : 'video in caricamento' }}
+          } @else {
+            Caricamenti ({{ uploadService.uploadCount() }})
+          }
         </span>
       </div>
       
-      <div class="header-actions">
-        @if (uploadService.uploadCount() === 0) {
+      <div class="header-actions">    
+        @if (uploadService.uploadedCount() > 0 || uploadService.errorCount() > 0) {
           <button mat-icon-button 
                   (click)="uploadService.clearCompleted(); $event.stopPropagation()"
-                  class="clear-btn">
+                  class="clear-btn"
+                  matTooltip="Rimuovi completati">
             <mat-icon>clear_all</mat-icon>
           </button>
         }
@@ -29,8 +34,10 @@
     <!-- Lista upload (visibile quando espansa) -->
     @if (isExpanded()) {
       <div class="upload-list" animate.enter="expand-down">
-        @for (upload of uploadingUploads(); track upload.id) {
+        @for (upload of uploadService.activeUploads(); track upload.tempId) {
           <div class="upload-item" 
+               [class.completed]="upload.status === 'uploaded'"
+               [class.failed]="upload.status === 'error'"
                animate.enter="slide-fade-in"
                animate.leave="slide-fade-out">
             <div class="upload-info">
@@ -41,17 +48,25 @@
               <div class="upload-details">
                 <div class="upload-name">{{ upload.title || upload.fileName }}</div>
                 <div class="upload-status">
-                  Caricamento: {{ upload.progress }}%
+                  @if (upload.status === 'uploaded') {
+                    <span class="success">✓ Caricamento completato</span>
+                  } @else if (upload.status === 'error') {
+                    <span class="error">✗ {{ upload.errorMessage || 'Errore' }}</span>
+                  } @else {
+                    <span>Caricamento: {{ upload.progress }}%</span>
+                  }
                 </div>
               </div>
             </div>
 
-            <!-- Progress bar determinate -->
-            <mat-progress-bar 
-              mode="determinate"
-              [value]="upload.progress"
-              color="primary">
-            </mat-progress-bar>
+            <!-- Progress bar -->
+            @if (upload.status !== 'error') {
+              <mat-progress-bar 
+                mode="determinate"
+                [value]="upload.progress"
+                [color]="upload.status === 'uploaded' ? 'accent' : 'primary'">
+              </mat-progress-bar>
+            }
           </div>
         }
       </div>
