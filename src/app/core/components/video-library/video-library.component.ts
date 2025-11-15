@@ -91,9 +91,11 @@ export class VideoLibraryComponent {
   }
 
   openUploadDialog(): void {
-    this.dialog.open(VideoUploadDialogComponent, {
-      width: '800px',
-      maxHeight: '90vh'
+    const dialogRef = this.dialog.open(VideoUploadDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      panelClass: 'upload-dialog-panel',
+      disableClose: false
     });
   }
 

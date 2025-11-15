@@ -34,7 +34,6 @@ export class VideoUploadDialogComponent {
   private dialogRef = inject(MatDialogRef<VideoUploadDialogComponent>);
   private videoService = inject(VideoService);
 
-
   categories = CATEGORIES;
   videoFile = signal<File | null>(null);
   thumbnailFile = signal<File | null>(null);
@@ -43,9 +42,7 @@ export class VideoUploadDialogComponent {
   validationImageError = signal<string | null>(null);
   isValidating = signal(false);
   
-  // animation fly-to-corner
-  showFlyingIcon = signal(false);
-  flyingIconStyle = signal<any>({});
+  isClosing = signal(false);
 
   uploadForm = this.fb.group({
     title: ['', Validators.required],
@@ -102,17 +99,17 @@ export class VideoUploadDialogComponent {
       this.thumbnailFile.set(file);
     } else {
       this.thumbnailFile.set(null);
-      // Mostra errore (puoi usare snackbar o segnale dedicato)
       this.validationImageError.set(result.reason || 'File immagine non valido');
       input.value = '';
     }
   }
 
-
   async onSubmit(event: MouseEvent): Promise<void> {
     if (this.uploadForm.valid && this.videoFile()) {
-      // Trigger fly animation before closing
-      this.triggerFlyAnimation(event.currentTarget as HTMLElement);
+      this.isClosing.set(true);
+      
+      // Target position (progress bar)
+      this.triggerShrinkAnimation();
       
       const tags = this.uploadForm.value.tags!
         .split(',')
@@ -126,7 +123,7 @@ export class VideoUploadDialogComponent {
         tags
       };
 
-      // Start upload in background (non-blocking)
+      // Start upload in background
       this.videoService.uploadVideo(
         this.videoFile()!,
         this.thumbnailFile(),
@@ -135,52 +132,37 @@ export class VideoUploadDialogComponent {
         console.error('Upload error:', error);
       });
       
-      // Small delay to let the animation start, then close dialog
+      // Close after animation
       setTimeout(() => {
         this.dialogRef.close({ 
           started: true,
           metadata 
         });
-      }, 150);
+      }, 600);
     }
   }
 
-  private triggerFlyAnimation(button: HTMLElement): void {
+  private triggerShrinkAnimation(): void {
+    // Target position of the progress bar
+    const targetX = window.innerWidth - 220;
+    const targetY = window.innerHeight - 43;
     
-    if (!button) {
-      return;
+    const dialogContainer = document.querySelector('.upload-dialog-panel');
+    
+    if (dialogContainer) {
+      const rect = dialogContainer.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      // Distance between the center of the dialog and the target position
+      const deltaX = targetX - centerX;
+      const deltaY = targetY - centerY;
+      
+      (dialogContainer as HTMLElement).style.setProperty('--target-x', `${deltaX}px`);
+      (dialogContainer as HTMLElement).style.setProperty('--target-y', `${deltaY}px`);
+      
+      dialogContainer.classList.add('shrink-to-corner');
     }
-
-    const rect = button.getBoundingClientRect();
-    
-    const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height / 2;
-    
-    const endX = window.innerWidth - 220;
-    const endY = window.innerHeight - 43;
-    
-    const style = {
-      left: `${startX}px`,
-      top: `${startY}px`,
-      transform: 'translate(-50%, -50%) scale(1) rotate(0deg)',
-      opacity: '1'
-    };
-    
-    this.flyingIconStyle.set(style);
-    this.showFlyingIcon.set(true);
-    
-    setTimeout(() => {
-      this.flyingIconStyle.set({
-        left: `${endX}px`,
-        top: `${endY}px`,
-        transform: 'translate(-50%, -50%) scale(0.3) rotate(360deg)',
-        opacity: '0'
-      });
-    }, 10);
-    
-    setTimeout(() => {
-      this.showFlyingIcon.set(false);
-    }, 2550);
   }
 
   onCancel(): void {
