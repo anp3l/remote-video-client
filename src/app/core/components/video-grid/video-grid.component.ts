@@ -30,6 +30,7 @@ export class VideoGridComponent {
   @Input() categoryFilter = 'all';
 
   @Output() videoPlay = new EventEmitter<Video>();
+  @Output() download = new EventEmitter<Video>();
   @Output() videoEdit = new EventEmitter<Video>();
   @Output() videoDelete = new EventEmitter<Video>();
   @Output() uploadClick = new EventEmitter<void>();

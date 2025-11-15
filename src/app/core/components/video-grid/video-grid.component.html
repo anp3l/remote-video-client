@@ -37,6 +37,7 @@
         <app-video-card 
           [video]="video"
           (play)="onVideoPlay(video)"
+          (download)="download.emit(video)"
           (edit)="onVideoEdit(video)"
           (delete)="onVideoDelete(video)">
         </app-video-card>

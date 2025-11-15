@@ -285,6 +285,40 @@ export class VideoService {
     });
   }
 
+  downloadVideo(id: string, title: string): void {
+    this.videoApi.getVideoDownload(id).subscribe({
+      next: (response) => {
+        const blob = response.body;
+        if (!blob) return;
+        
+        let filename = title;
+        const contentDisposition = response.headers.get('content-disposition');
+        if (contentDisposition) {
+          const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+          if (matches?.[1]) {
+            filename = matches[1].replace(/['"]/g, '');
+          }
+        }
+        
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+        
+      },
+      error: (error) => {
+        console.error('Download error:', error);
+        this.snackBar.open('Errore durante il download', 'Chiudi', {
+          duration: 5000
+        });
+      }
+    });
+  }
+
+
+
   private formatDuration(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);

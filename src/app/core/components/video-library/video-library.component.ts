@@ -132,4 +132,8 @@ export class VideoLibraryComponent {
       }
     });
   }
+
+  downloadVideo(video: Video): void {
+    this.videoService.downloadVideo(video.id, video.title);
+  }
 }

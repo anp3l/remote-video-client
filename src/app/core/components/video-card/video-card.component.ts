@@ -38,6 +38,7 @@ export class VideoCardComponent {
   @Output() play = new EventEmitter<void>();
   @Output() edit = new EventEmitter<void>();
   @Output() delete = new EventEmitter<void>();
+  @Output() download = new EventEmitter<void>();
 
   private videoStatusCache = signal<Record<string, string>>({});
   private staticThumbnailCache = signal<Record<string, string>>({});
@@ -46,6 +47,10 @@ export class VideoCardComponent {
 
   onPlay(): void {
     this.play.emit();
+  }
+
+  onDownload(): void {
+    this.download.emit();
   }
 
   onEdit(): void {

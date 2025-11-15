@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient , HttpEventType, HttpEvent} from '@angular/common/http';
+import { HttpClient , HttpEventType, HttpEvent, HttpResponse} from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { map, switchMap, takeWhile, tap, filter } from 'rxjs/operators';
 import { Video, VideoMetadata } from '../models/video.model';
@@ -110,6 +110,13 @@ export class VideoApiService {
 
   deleteVideo(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/videos/${id}`);
+  }
+
+  getVideoDownload(id: string): Observable<HttpResponse<Blob>> {
+    return this.http.get(`${this.apiUrl}/videos/download/${id}`, {
+      responseType: 'blob',
+      observe: 'response'
+    });
   }
 
   getVideoStreamUrl(id: string): string {

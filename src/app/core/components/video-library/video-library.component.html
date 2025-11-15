@@ -27,6 +27,7 @@
     [searchQuery]="searchQuery()"
     [categoryFilter]="categoryFilter()"
     (videoPlay)="openPlayerDialog($event)"
+    (download)="downloadVideo($event)"
     (videoEdit)="openEditDialog($event)"
     (videoDelete)="openDeleteDialog($event)"
     (uploadClick)="openUploadDialog()">
