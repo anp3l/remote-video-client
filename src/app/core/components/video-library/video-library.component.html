@@ -1,5 +1,4 @@
-<div class="min-h-screen bg-background flex flex-col">
-  <!-- Header Component -->
+<div class="fixed-header-wrapper">
   <app-library-header
     [videoCount]="videoCount()"
     [filteredCount]="filteredCount()"
@@ -16,20 +15,20 @@
     (upload)="openUploadDialog()"
     (refresh)="refreshVideos()">
   </app-library-header>
-
-  <!-- Main Content -->
-  <main class="container mx-auto px-4 py-8 flex-1">
-    <!-- Video Grid Component -->
-    <app-video-grid
-      [videos]="filteredVideos()"
-      [loading]="loading()"
-      [viewMode]="viewMode()"
-      [searchQuery]="searchQuery()"
-      [categoryFilter]="categoryFilter()"
-      (videoPlay)="openPlayerDialog($event)"
-      (videoEdit)="openEditDialog($event)"
-      (videoDelete)="openDeleteDialog($event)"
-      (uploadClick)="openUploadDialog()">
-    </app-video-grid>
-  </main>
 </div>
+
+<!-- Main Content -->
+<main class="main-content container mx-auto px-4 py-8 flex-1">
+  <!-- Video Grid Component -->
+  <app-video-grid
+    [videos]="filteredVideos()"
+    [loading]="loading()"
+    [viewMode]="viewMode()"
+    [searchQuery]="searchQuery()"
+    [categoryFilter]="categoryFilter()"
+    (videoPlay)="openPlayerDialog($event)"
+    (videoEdit)="openEditDialog($event)"
+    (videoDelete)="openDeleteDialog($event)"
+    (uploadClick)="openUploadDialog()">
+  </app-video-grid>
+</main>
