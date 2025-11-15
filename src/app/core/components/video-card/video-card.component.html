@@ -13,7 +13,17 @@
         {{ video.duration | durationFormat }}
       </div>
     </div>
-  
+      }
+  @else {
+    <div class="thumbnail-placeholder animate-pulse">
+      <div class="message-wrapper">
+        <p class="placeholder-text">
+          {{video.title || getVideoTitle(video)}} {{ 'processing' }}
+        </p>
+        <mat-icon class="processing-icon">hourglass_top</mat-icon>
+      </div>
+    </div>
+  }
     <mat-card-content class="card-content">
       <!-- Title with menu button -->
       <div class="title-row">
@@ -58,15 +68,4 @@
         <span>Elimina</span>
       </button>
     </mat-menu>
-    }
-  @else {
-    <div class="thumbnail-placeholder animate-pulse">
-      <div class="message-wrapper">
-        <p class="placeholder-text">
-          {{video.title || getVideoTitle(video)}} {{ 'processing' }}
-        </p>
-        <mat-icon class="processing-icon">hourglass_top</mat-icon>
-      </div>
-    </div>
-  }
 </mat-card>
