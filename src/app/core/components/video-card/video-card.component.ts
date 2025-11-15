@@ -82,9 +82,10 @@ export class VideoCardComponent {
           
           return forkJoin({
             staticThumb: this.http.get(staticUrl, { responseType: 'blob' }),
-            animated: this.http.get(animatedUrl, { responseType: 'blob' })
+            animated: this.http.get(animatedUrl, { responseType: 'blob' }),
+            duration: this.videoApiService.getVideoDuration(id)
           }).pipe(
-            tap(({ staticThumb, animated }) => {
+            tap(({ staticThumb, animated, duration }) => {
               const staticBlobUrl = URL.createObjectURL(staticThumb);
               const animatedBlobUrl = URL.createObjectURL(animated);
               
@@ -103,6 +104,8 @@ export class VideoCardComponent {
               preloadStatic.src = staticBlobUrl;
               const preloadAnimated = new Image();
               preloadAnimated.src = animatedBlobUrl;
+
+              this.video = { ...this.video, duration: duration };
             }),
             catchError(() => of(null))
           );

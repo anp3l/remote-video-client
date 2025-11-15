@@ -145,9 +145,13 @@ export class VideoApiService {
     );
   }
 
-    getVideoStatus(id: string): Observable<string> {
+  getVideoStatus(id: string): Observable<string> {
     return this.http.get<{ videoStatus: string }>(`${this.apiUrl}/videos/status/${id}`).pipe(
       map(response => response.videoStatus)
     );
+  }
+
+  getVideoDuration(id: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/videos/duration/${id}`);
   }
 }
