@@ -24,17 +24,17 @@
 
 // ANIMATION FLY-TO-CORNER
 .flying-icon {
-  position: fixed;
-  z-index: 9999;
-  pointer-events: none;
+  position: fixed !important;
+  z-index: 99999 !important;
+  pointer-events: none !important;
+  transition: all 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   
   mat-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    color: #667eea;
-    filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.4));
-    animation: flyToCorner 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    font-size: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    color: #667eea !important;
+    filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.4)) !important;
   }
 }
 

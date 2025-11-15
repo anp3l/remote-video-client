@@ -1,4 +1,4 @@
-import { Component, inject, signal, ElementRef, viewChild } from '@angular/core';
+import { Component, inject, signal, ElementRef, viewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -26,15 +26,14 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
     MatIconModule
   ],
   templateUrl: './video-upload-dialog.component.html',
-  styleUrls: ['./video-upload-dialog.component.scss']
+  styleUrls: ['./video-upload-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class VideoUploadDialogComponent {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<VideoUploadDialogComponent>);
   private videoService = inject(VideoService);
 
-  // Ref to the submit animated button
-  submitButton = viewChild<ElementRef>('submitBtn');
 
   categories = CATEGORIES;
   videoFile = signal<File | null>(null);
@@ -110,10 +109,10 @@ export class VideoUploadDialogComponent {
   }
 
 
-  async onSubmit(): Promise<void> {
+  async onSubmit(event: MouseEvent): Promise<void> {
     if (this.uploadForm.valid && this.videoFile()) {
       // Trigger fly animation before closing
-      this.triggerFlyAnimation();
+      this.triggerFlyAnimation(event.currentTarget as HTMLElement);
       
       const tags = this.uploadForm.value.tags!
         .split(',')
@@ -146,43 +145,42 @@ export class VideoUploadDialogComponent {
     }
   }
 
-  private triggerFlyAnimation(): void {
-    const button = this.submitButton()?.nativeElement;
-    if (!button) return;
+  private triggerFlyAnimation(button: HTMLElement): void {
+    
+    if (!button) {
+      return;
+    }
 
-    // Get button position
     const rect = button.getBoundingClientRect();
     
-    // Starting position (center of button)
     const startX = rect.left + rect.width / 2;
     const startY = rect.top + rect.height / 2;
     
-    // End position calculation based on upload-progress bar position:
-    // Fixed position: bottom: 20px, right: 20px, width: 400px
-    // Target: center of the upload-progress header
-    const uploadProgressWidth = Math.min(400, window.innerWidth - 40);
-    const uploadProgressRight = 20;
-    const uploadProgressBottom = 20;
+    const endX = window.innerWidth - 220;
+    const endY = window.innerHeight - 43;
     
-    // Center of upload-progress header (approx 46px tall based on padding + text)
-    const endX = window.innerWidth - uploadProgressRight - (uploadProgressWidth / 2);
-    const endY = window.innerHeight - uploadProgressBottom - 23; // 23px = half of header height
-    
-    // Initial style with CSS variables for animation
-    this.flyingIconStyle.set({
+    const style = {
       left: `${startX}px`,
       top: `${startY}px`,
-      '--end-x': `${endX - startX}px`,
-      '--end-y': `${endY - startY}px`
-    });
+      transform: 'translate(-50%, -50%) scale(1) rotate(0deg)',
+      opacity: '1'
+    };
     
-    // Show the icon
+    this.flyingIconStyle.set(style);
     this.showFlyingIcon.set(true);
     
-    // Hide after animation completes
+    setTimeout(() => {
+      this.flyingIconStyle.set({
+        left: `${endX}px`,
+        top: `${endY}px`,
+        transform: 'translate(-50%, -50%) scale(0.3) rotate(360deg)',
+        opacity: '0'
+      });
+    }, 10);
+    
     setTimeout(() => {
       this.showFlyingIcon.set(false);
-    }, 800);
+    }, 2550);
   }
 
   onCancel(): void {

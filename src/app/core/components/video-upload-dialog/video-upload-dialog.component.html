@@ -111,7 +111,7 @@
   </button>
   <button mat-raised-button 
           color="primary"
-          (click)="onSubmit()"
+          (click)="onSubmit($event)"
           [disabled]="!uploadForm.valid || !videoFile()"
           #submitBtn>
     Carica Video

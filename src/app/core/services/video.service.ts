@@ -93,9 +93,9 @@ export class VideoService {
             this.videos.update(current => [newVideo, ...current]);
             
             // Show success message
-            this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
+            /*this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
               duration: 3000
-            });
+            });*/
             
             resolve(newVideo);
           }
@@ -137,7 +137,7 @@ export class VideoService {
         resolve({
           file,
           valid: false,
-          reason: `Formato video non supportato. Formati accettati: ${AppConfig.supportedVideoExtensions.join(', ').toUpperCase()}`,
+          reason: `Formato video non supportato. Formati accettati: ${AppConfig.supportedVideoExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
         });
         return;
       }
