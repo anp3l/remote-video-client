@@ -21,6 +21,8 @@ export class VideoService {
   private uploadProgressService = inject(UploadProgressService); // ← AGGIUNGI QUESTO
   private readonly MAX_SIZE_BYTES = AppConfig.maxVideoSizeMB * MB_TO_BYTES;
   private readonly MAX_DURATION_SECONDS = AppConfig.maxVideoDurationSeconds;
+  private readonly MAX_THUMBNAIL_SIZE_BYTES = AppConfig.maxThumbnailSizeMB * MB_TO_BYTES;
+
 
   // Signals 🎯
   videos = signal<Video[]>([]);
@@ -196,6 +198,44 @@ export class VideoService {
     });
   }
 
+  validateThumbnailFile(
+    file: File,
+    maxSize = this.MAX_THUMBNAIL_SIZE_BYTES,
+    supportedFormats = AppConfig.supportedImageFormats
+  ): Promise<{ valid: boolean; reason?: string }> {
+    return new Promise((resolve) => {
+      // Verifica tipo MIME immagine supportato
+      if (!file.type.startsWith('image/')) {
+        resolve({ valid: false, reason: `Il file "${file.name}" non è un'immagine valida.` });
+        return;
+      }
+
+      if (!this.isSupportedThumbFormat(file.type)) {
+        resolve({
+          valid: false,
+          reason: `Formato immagine non supportato. Formati accettati: ${AppConfig.supportedImageExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
+        });
+        return;
+      }
+
+      // Verifica dimensione massima
+      if (file.size > maxSize) {
+        const maxSizeMB = maxSize / MB_TO_BYTES;
+        const fileSizeMB = (file.size / MB_TO_BYTES).toFixed(2);
+        resolve({
+          valid: false,
+          reason: `Il file "${file.name}" supera il limite di ${maxSizeMB}MB (dimensione: ${fileSizeMB}MB).`,
+        });
+        return;
+      }
+
+      // Se tutte le condizioni passano
+      resolve({ valid: true });
+    });
+  }
+
+
+
   updateVideo(id: string, updates: Partial<VideoMetadata>): Promise<Video> {
     return new Promise((resolve, reject) => {
       this.videoApi.updateVideo(id, updates).subscribe({
@@ -263,4 +303,11 @@ export class VideoService {
   ): type is typeof AppConfig.supportedVideoFormats[number] {
     return (AppConfig.supportedVideoFormats as readonly string[]).includes(type);
   }
+
+  private isSupportedThumbFormat(
+    type: string
+  ): type is typeof AppConfig.supportedImageFormats[number] {
+    return (AppConfig.supportedImageFormats as readonly string[]).includes(type);
+  }
+
 }

@@ -26,15 +26,15 @@
         </p>
       }
       
-      @if (videoFile() && !validationError()) {
+      @if (videoFile() && !validationFileError()) {
         <p class="mt-1 text-sm text-green-600">
           ✓ {{ videoFile()!.name }}
         </p>
       }
       
-      @if (validationError()) {
+      @if (validationFileError()) {
         <p class="mt-1 text-sm text-red-600">
-          ⚠ {{ validationError() }}
+          ⚠ {{ validationFileError() }}
         </p>
       }
     </div>
@@ -53,9 +53,15 @@
             (change)="onThumbnailFileSelected($event)"
             class="hidden">
       
-      @if (thumbnailFile()) {
+      @if (thumbnailFile() && !validationImageError()) {
         <p class="mt-2 text-sm text-muted-foreground">
           ✓ {{ thumbnailFile()!.name }}
+        </p>
+      }
+
+      @if (validationImageError()) {
+        <p class="mt-1 text-sm text-red-600">
+          ⚠ {{ validationImageError() }}
         </p>
       }
     </div>

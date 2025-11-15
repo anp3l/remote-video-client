@@ -21,6 +21,7 @@ export const AppConfig = {
     'image/webp',
     'image/jpg'
   ],
+  supportedImageExtensions: ['jpeg', 'jpg', 'png', 'webp'],
 } as const;
 
 export const CATEGORIES = [

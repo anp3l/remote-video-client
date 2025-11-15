@@ -40,7 +40,8 @@ export class VideoUploadDialogComponent {
   videoFile = signal<File | null>(null);
   thumbnailFile = signal<File | null>(null);
   uploading = signal(false);
-  validationError = signal<string | null>(null);
+  validationFileError = signal<string | null>(null);
+  validationImageError = signal<string | null>(null);
   isValidating = signal(false);
   
   // animation fly-to-corner
@@ -60,11 +61,11 @@ export class VideoUploadDialogComponent {
     
     if (!file) {
       this.videoFile.set(null);
-      this.validationError.set(null);
+      this.validationFileError.set(null);
       return;
     }
 
-    this.validationError.set(null);
+    this.validationFileError.set(null);
     this.isValidating.set(true);
 
     try {
@@ -72,16 +73,16 @@ export class VideoUploadDialogComponent {
       
       if (result.valid) {
         this.videoFile.set(file);
-        this.validationError.set(null);
+        this.validationFileError.set(null);
         console.log(`Video valido - Durata: ${result.duration?.toFixed(2)}s`);
       } else {
         this.videoFile.set(null);
-        this.validationError.set(result.reason || 'File non valido');
+        this.validationFileError.set(result.reason || 'File non valido');
         input.value = '';
       }
     } catch (error) {
       console.error('Errore durante la validazione del video:', error);
-      this.validationError.set('Errore durante la validazione del file');
+      this.validationFileError.set('Errore durante la validazione del file');
       this.videoFile.set(null);
       input.value = '';
     } finally {
@@ -89,13 +90,25 @@ export class VideoUploadDialogComponent {
     }
   }
 
-  onThumbnailFileSelected(event: Event): void {
+  async onThumbnailFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
-    if (file) {
+    if (!file) {
+      this.thumbnailFile.set(null);
+      return;
+    }
+
+    const result = await this.videoService.validateThumbnailFile(file);
+    if (result.valid) {
       this.thumbnailFile.set(file);
+    } else {
+      this.thumbnailFile.set(null);
+      // Mostra errore (puoi usare snackbar o segnale dedicato)
+      this.validationImageError.set(result.reason || 'File immagine non valido');
+      input.value = '';
     }
   }
+
 
   async onSubmit(): Promise<void> {
     if (this.uploadForm.valid && this.videoFile()) {
