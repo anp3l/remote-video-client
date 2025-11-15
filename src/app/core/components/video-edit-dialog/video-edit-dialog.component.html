@@ -3,7 +3,7 @@
 <mat-dialog-content class="!p-6">
   <form [formGroup]="editForm" class="space-y-4">
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Titolo *</mat-label>
+      <mat-label>Titolo</mat-label>
       <input matInput 
              formControlName="title"
              placeholder="Inserisci titolo video">
@@ -21,7 +21,7 @@
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Categoria *</mat-label>
+      <mat-label>Categoria</mat-label>
       <mat-select formControlName="category">
         @for (cat of categories; track cat) {
           <mat-option [value]="cat">{{ cat }}</mat-option>

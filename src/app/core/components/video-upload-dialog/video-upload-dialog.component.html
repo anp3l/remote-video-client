@@ -3,18 +3,20 @@
 <mat-dialog-content class="!p-6">
   <form [formGroup]="uploadForm" class="space-y-4">
     <div>
-      <label class="block mb-2 font-medium">Video File *</label>
-      <input type="file" 
+      <label class="block mb-2 font-medium">Video*</label>
+      <button type="button" 
+              mat-raised-button 
+              (click)="videoFileInput.click()"
+              [disabled]="isValidating()">
+        <mat-icon>upload_file</mat-icon>
+        Scegli Video
+      </button>
+      <input #videoFileInput
+            type="file" 
             accept=".mp4,.mov,.avi,video/mp4,video/quicktime,video/x-msvideo"
             (change)="onVideoFileSelected($event)"
             [disabled]="isValidating()"
-            class="block w-full text-sm text-muted-foreground
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded file:border-0
-                    file:bg-primary file:text-white
-                    hover:file:bg-primary/90
-                    cursor-pointer
-                    disabled:opacity-50 disabled:cursor-not-allowed"
+            class="hidden"
             required>
       
       @if (isValidating()) {
@@ -38,23 +40,28 @@
     </div>
 
     <div>
-      <label class="block mb-2 font-medium">Thumbnail Image</label>
-      <input type="file" 
-             accept="image/*"
-             (change)="onThumbnailFileSelected($event)"
-             class="block w-full text-sm text-muted-foreground
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded file:border-0
-                    file:bg-secondary file:text-secondary-foreground
-                    hover:file:bg-secondary/90
-                    cursor-pointer">
+      <label class="block mb-2 font-medium">Thumbnail</label>
+      <button type="button" 
+              mat-raised-button
+              (click)="thumbnailFileInput.click()">
+        <mat-icon>image</mat-icon>
+        Scegli Immagine
+      </button>
+      <input #thumbnailFileInput
+            type="file" 
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+            (change)="onThumbnailFileSelected($event)"
+            class="hidden">
+      
       @if (thumbnailFile()) {
-        <p class="mt-1 text-sm text-muted-foreground">{{ thumbnailFile()!.name }}</p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          ✓ {{ thumbnailFile()!.name }}
+        </p>
       }
     </div>
 
-    <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Titolo *</mat-label>
+    <mat-form-field class="w-full"  appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Titolo</mat-label>
       <input matInput 
              formControlName="title"
              placeholder="Inserisci titolo video">
@@ -72,7 +79,7 @@
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Categoria *</mat-label>
+      <mat-label>Categoria</mat-label>
       <mat-select formControlName="category">
         @for (cat of categories; track cat) {
           <mat-option [value]="cat">{{ cat }}</mat-option>
