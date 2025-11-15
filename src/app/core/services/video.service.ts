@@ -241,7 +241,13 @@ export class VideoService {
       this.videoApi.updateVideo(id, updates).subscribe({
         next: (updatedVideo) => {
           this.videos.update(current =>
-            current.map(v => v.id === id ? updatedVideo : v)
+            current.map(v => {
+              if (v.id === id) {
+                // Merge
+                return { ...v, ...updatedVideo };
+              }
+              return v;
+            })
           );
           this.snackBar.open('Video aggiornato con successo!', 'Chiudi', {
             duration: 3000
@@ -257,6 +263,7 @@ export class VideoService {
       });
     });
   }
+
 
   deleteVideo(id: string): Promise<void> {
     return new Promise((resolve, reject) => {
