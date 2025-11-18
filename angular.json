@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "video-library-app": {
+    "remote-video-client": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/remote-video-client",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -40,12 +41,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "45kB",
+                  "maximumError": "50kB"
                 }
               ],
               "outputHashing": "all"
@@ -62,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "video-library-app:build:production"
+              "buildTarget": "remote-video-client:build:production"
             },
             "development": {
-              "buildTarget": "video-library-app:build:development"
+              "buildTarget": "remote-video-client:build:development"
             }
           },
           "defaultConfiguration": "development"

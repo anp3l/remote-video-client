@@ -61,28 +61,51 @@ export class VideoPlayerDialogComponent {
     const videoId = this.data.video.id;
     if (!videoId) return;
     
-    const streamUrl = this.videoApiService.getVideoStreamUrl(videoId);
-    const thumbnailUrl = this.videoApiService.getThumbnailUrl(videoId);
-    
-    this.player = videojs(this.videoElement.nativeElement, {
-      controls: true,
-      preload: 'auto',
-      poster: thumbnailUrl,
-      playbackRates: [0.5, 1, 1.5, 2],
-      fluid: false,
-      responsive: true,
-      aspectRatio: '16:9',
-      fill: false,
-      disablePictureInPicture: true, 
-      controlBar: {
-        pictureInPictureToggle: false 
+    this.videoApiService.getSignedUrls(videoId).subscribe({
+      next: (urls) => {
+        const urlParams = new URL(urls.streamUrl).searchParams;
+        const queryString = `?expires=${urlParams.get('expires')}&signature=${urlParams.get('signature')}&uid=${urlParams.get('uid')}`;
+        
+        this.player = videojs(this.videoElement.nativeElement, {
+          controls: true,
+          preload: 'auto',
+          poster: urls.thumbnailUrl,
+          playbackRates: [0.5, 1, 1.5, 2],
+          fluid: false,
+          responsive: true,
+          aspectRatio: '16:9',
+          fill: false,
+          disablePictureInPicture: true,
+          controlBar: {
+            pictureInPictureToggle: false
+          },
+          sources: [
+            {
+              src: urls.streamUrl,
+              type: 'application/x-mpegURL',
+            },
+          ],
+        });
+
+        this.player.ready(() => {
+          const tech = this.player?.tech({ IWillNotUseThisInPlugins: true }) as any;
+          
+          if (tech?.vhs?.xhr) {
+            tech.vhs.xhr.beforeRequest = (options: any) => {
+              if (options.uri.includes(`/videos/stream/${videoId}/`)) {
+                if (!options.uri.includes('expires=')) {
+                  const separator = options.uri.includes('?') ? '&' : '?';
+                  options.uri = options.uri + separator + queryString.substring(1);
+                }
+              }
+              return options;
+            };
+          }
+        });
       },
-      sources: [
-        {
-          src: streamUrl,
-          type: 'application/x-mpegURL',
-        },
-      ],
+      error: (error) => {
+        console.error('Error getting signed URLs:', error);
+      }
     });
   }
 

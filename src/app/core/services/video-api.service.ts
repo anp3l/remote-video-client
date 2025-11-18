@@ -161,4 +161,16 @@ export class VideoApiService {
   getVideoDuration(id: string): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/videos/duration/${id}`);
   }
+
+  getSignedUrls(videoId: string): Observable<{
+    streamUrl: string;
+    thumbnailUrl: string;
+    expiresAt: number;
+  }> {
+    return this.http.post<{
+      streamUrl: string;
+      thumbnailUrl: string;
+      expiresAt: number;
+    }>(`${this.apiUrl}/videos/${videoId}/signed-url`, {});
+  }
 }
