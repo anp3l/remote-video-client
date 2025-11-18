@@ -89,6 +89,10 @@ export class VideoService {
 
             // Add video to list (will show with videoStatus: "inProgress" in app-card)
             this.videos.update(current => [newVideo, ...current]);
+
+            setTimeout(() => {
+              this.uploadProgressService.removeUpload(tempId);
+            }, 2000);
             
             resolve(newVideo);
           }
