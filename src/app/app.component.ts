@@ -7,9 +7,7 @@ import { AppFooterComponent } from './shared/components/app-footer/app-footer.co
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
-    UploadProgressComponent,
-    AppFooterComponent
+    RouterOutlet
   ],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
