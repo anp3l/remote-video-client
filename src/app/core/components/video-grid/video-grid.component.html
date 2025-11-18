@@ -3,7 +3,7 @@
   @if (loading) {
     <div class="loading-state">
       <mat-spinner class="spinner"></mat-spinner>
-      <h2 class="loading-text">Caricamento video...</h2>
+      <h2 class="loading-text">Loading videos...</h2>
     </div>
   }
 
@@ -11,12 +11,12 @@
   @if (!loading && videos.length === 0) {
     <div class="empty-state">
       <mat-icon class="empty-icon">video_library</mat-icon>
-      <h2 class="empty-title">Nessun video trovato</h2>
+      <h2 class="empty-title">No videos found</h2>
       <p class="empty-description">
         @if (hasFilters) {
-          Prova a modificare i filtri o la ricerca
+          Try modifying the filters or search
         } @else {
-          Carica il tuo primo video per iniziare
+          Load your first video to get started
         }
       </p>
       @if (!hasFilters) {
@@ -24,7 +24,7 @@
                 color="primary"
                 (click)="onUploadClick()">
           <mat-icon>upload</mat-icon>
-          Carica Video
+          Upload Video
         </button>
       }
     </div>

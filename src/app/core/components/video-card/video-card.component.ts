@@ -104,7 +104,7 @@ export class VideoCardComponent {
                 [id]: animatedBlobUrl
               }));
               
-              // Preload immagini
+              // Preload images
               const preloadStatic = new Image();
               preloadStatic.src = staticBlobUrl;
               const preloadAnimated = new Image();

@@ -1,8 +1,8 @@
 import { Injectable, signal, computed } from '@angular/core';
 
 export interface UploadProgress {
-  id: string;           // ID definitivo dal server (vuoto inizialmente)
-  tempId: string;       // ID temporaneo usato per tracciare l'upload
+  id: string;
+  tempId: string;
   fileName: string;
   title: string;
   status: 'uploading' | 'uploaded' | 'error';

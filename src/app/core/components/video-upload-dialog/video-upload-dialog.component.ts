@@ -70,15 +70,14 @@ export class VideoUploadDialogComponent {
       if (result.valid) {
         this.videoFile.set(file);
         this.validationFileError.set(null);
-        console.log(`Video valido - Durata: ${result.duration?.toFixed(2)}s`);
       } else {
         this.videoFile.set(null);
-        this.validationFileError.set(result.reason || 'File non valido');
+        this.validationFileError.set(result.reason || 'File not valid');
         input.value = '';
       }
     } catch (error) {
-      console.error('Errore durante la validazione del video:', error);
-      this.validationFileError.set('Errore durante la validazione del file');
+      console.error('Error during video validation:', error);
+      this.validationFileError.set('Error during file validation');
       this.videoFile.set(null);
       input.value = '';
     } finally {
@@ -99,7 +98,7 @@ export class VideoUploadDialogComponent {
       this.thumbnailFile.set(file);
     } else {
       this.thumbnailFile.set(null);
-      this.validationImageError.set(result.reason || 'File immagine non valido');
+      this.validationImageError.set(result.reason || 'File immage not valid');
       input.value = '';
     }
   }

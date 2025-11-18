@@ -18,17 +18,15 @@ export interface VideoValidationResult {
 export class VideoService {
   private videoApi = inject(VideoApiService);
   private snackBar = inject(MatSnackBar);
-  private uploadProgressService = inject(UploadProgressService); // ← AGGIUNGI QUESTO
+  private uploadProgressService = inject(UploadProgressService);
   private readonly MAX_SIZE_BYTES = AppConfig.maxVideoSizeMB * MB_TO_BYTES;
   private readonly MAX_DURATION_SECONDS = AppConfig.maxVideoDurationSeconds;
   private readonly MAX_THUMBNAIL_SIZE_BYTES = AppConfig.maxThumbnailSizeMB * MB_TO_BYTES;
 
 
-  // Signals 🎯
   videos = signal<Video[]>([]);
   loading = signal(false);
 
-  // Computed Signals
   videoCount = computed(() => this.videos().length);
   categories = computed(() => {
     const cats = new Set(this.videos().map(v => v.category));
@@ -44,16 +42,16 @@ export class VideoService {
       next: (videos) => {
         this.videos.set(videos);
         this.loading.set(false);
-        this.snackBar.open('Video caricati dal server locale', 'Chiudi', {
+        this.snackBar.open('Videos loaded from local server', 'Close', {
           duration: 3000
         });
       },
       error: (error) => {
-        console.error('Errore connessione server:', error);
+        console.error('Server connection error:', error);
         this.loading.set(false);
         this.snackBar.open(
-          'Impossibile connettersi al server locale.',
-          'Chiudi',
+          'Unable to connect to the local server.',
+          'Close',
           { duration: 5000 }
         );
       }
@@ -92,24 +90,17 @@ export class VideoService {
             // Add video to list (will show with videoStatus: "inProgress" in app-card)
             this.videos.update(current => [newVideo, ...current]);
             
-            // Show success message
-            /*this.snackBar.open('Video caricato! Elaborazione in corso...', 'Chiudi', {
-              duration: 3000
-            });*/
-            
             resolve(newVideo);
           }
         },
         error: (error) => {
           this.uploadProgressService.updateProgress(tempId, {
             status: 'error',
-            errorMessage: error.message || 'Errore durante il caricamento'
+            errorMessage: error.message || 'Error during upload'
           });
-          
-          this.snackBar.open('Errore durante il caricamento', 'Chiudi', {
+          this.snackBar.open('Error during upload', 'Close', {
             duration: 5000
           });
-          
           reject(error);
         }
       });
@@ -127,7 +118,7 @@ export class VideoService {
         resolve({
           file,
           valid: false,
-          reason: `Il file "${file.name}" non è un video supportato.`,
+          reason: `The file "${file.name}" is not a supported video.`,
         });
         return;
       }
@@ -137,7 +128,7 @@ export class VideoService {
         resolve({
           file,
           valid: false,
-          reason: `Formato video non supportato. Formati accettati: ${AppConfig.supportedVideoExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
+          reason: `Unsupported video format. Accepted formats: ${AppConfig.supportedVideoExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
         });
         return;
       }
@@ -158,7 +149,7 @@ export class VideoService {
           resolve({
             file,
             valid: false,
-            reason: `Il video "${file.name}" ha una durata non valida (potrebbe essere un codec non supportato).`,
+            reason: `The video "${file.name}" has an invalid duration (likely unsupported codec).`,
           });
         } else if (tooBig) {
           const maxSizeMB = maxSize / MB_TO_BYTES;
@@ -166,7 +157,7 @@ export class VideoService {
           resolve({
             file,
             valid: false,
-            reason: `Il file "${file.name}" supera il limite di ${maxSizeMB}MB (dimensione: ${fileSizeMB}MB).`,
+           reason: `The file "${file.name}" exceeds the size limit of ${maxSizeMB}MB (size: ${fileSizeMB}MB).`,
           });
         } else if (tooLong) {
           const maxDurationFormatted = this.formatDuration(maxDuration);
@@ -174,7 +165,7 @@ export class VideoService {
           resolve({
             file,
             valid: false,
-            reason: `Il video "${file.name}" supera la durata massima di ${maxDurationFormatted} (durata: ${videoDurationFormatted}).`,
+            reason: `The video "${file.name}" exceeds the maximum allowed duration of ${maxDurationFormatted} (duration: ${videoDurationFormatted}).`,
           });
         } else {
           resolve({
@@ -186,11 +177,11 @@ export class VideoService {
       };
 
       video.onerror = () => {
-        console.warn(`Video non leggibile o codec non supportato: ${file.name}`);
+        console.warn(`Unreadable video or unsupported codec: ${file.name}`);
         resolve({
           file,
           valid: false,
-          reason: `Il video "${file.name}" non può essere letto — potrebbe usare un codec o formato non supportato.`,
+          reason: `The video "${file.name}" cannot be read — it may use an unsupported codec or format.`,
         });
       };
 
@@ -204,37 +195,35 @@ export class VideoService {
     supportedFormats = AppConfig.supportedImageFormats
   ): Promise<{ valid: boolean; reason?: string }> {
     return new Promise((resolve) => {
-      // Verifica tipo MIME immagine supportato
+      // Check supported image MIME type
       if (!file.type.startsWith('image/')) {
-        resolve({ valid: false, reason: `Il file "${file.name}" non è un'immagine valida.` });
+        resolve({ valid: false, reason: `The file "${file.name}" is not a valid image.` });
         return;
       }
 
       if (!this.isSupportedThumbFormat(file.type)) {
         resolve({
           valid: false,
-          reason: `Formato immagine non supportato. Formati accettati: ${AppConfig.supportedImageExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
+          reason: `Unsupported image format. Accepted formats: ${AppConfig.supportedImageExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
         });
         return;
       }
 
-      // Verifica dimensione massima
+      // Check max size
       if (file.size > maxSize) {
         const maxSizeMB = maxSize / MB_TO_BYTES;
         const fileSizeMB = (file.size / MB_TO_BYTES).toFixed(2);
         resolve({
           valid: false,
-          reason: `Il file "${file.name}" supera il limite di ${maxSizeMB}MB (dimensione: ${fileSizeMB}MB).`,
+          reason: `The file "${file.name}" exceeds the size limit of ${maxSizeMB}MB (size: ${fileSizeMB}MB).`,
         });
         return;
       }
 
-      // Se tutte le condizioni passano
+      // All checks passed
       resolve({ valid: true });
     });
   }
-
-
 
   updateVideo(id: string, updates: Partial<VideoMetadata>): Promise<Video> {
     return new Promise((resolve, reject) => {
@@ -243,19 +232,18 @@ export class VideoService {
           this.videos.update(current =>
             current.map(v => {
               if (v.id === id) {
-                // Merge
                 return { ...v, ...updatedVideo };
               }
               return v;
             })
           );
-          this.snackBar.open('Video aggiornato con successo!', 'Chiudi', {
+          this.snackBar.open('Video updated successfully!', 'Close', {
             duration: 3000
           });
           resolve(updatedVideo);
         },
         error: (error) => {
-          this.snackBar.open('Errore durante l\'aggiornamento', 'Chiudi', {
+          this.snackBar.open('Error updating video', 'Close', {
             duration: 5000
           });
           reject(error);
@@ -264,19 +252,18 @@ export class VideoService {
     });
   }
 
-
   deleteVideo(id: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.videoApi.deleteVideo(id).subscribe({
         next: () => {
           this.videos.update(current => current.filter(v => v.id !== id));
-          this.snackBar.open('Video eliminato con successo!', 'Chiudi', {
+          this.snackBar.open('Video deleted successfully!', 'Close', {
             duration: 3000
           });
           resolve();
         },
         error: (error) => {
-          this.snackBar.open('Errore durante l\'eliminazione', 'Chiudi', {
+          this.snackBar.open('Error deleting video', 'Close', {
             duration: 5000
           });
           reject(error);
@@ -290,7 +277,7 @@ export class VideoService {
       next: (response) => {
         const blob = response.body;
         if (!blob) return;
-        
+
         let filename = title;
         const contentDisposition = response.headers.get('content-disposition');
         if (contentDisposition) {
@@ -299,25 +286,23 @@ export class VideoService {
             filename = matches[1].replace(/['"]/g, '');
           }
         }
-        
+
         const a = document.createElement('a');
         const objectUrl = URL.createObjectURL(blob);
         a.href = objectUrl;
         a.download = filename;
         a.click();
         URL.revokeObjectURL(objectUrl);
-        
+
       },
       error: (error) => {
         console.error('Download error:', error);
-        this.snackBar.open('Errore durante il download', 'Chiudi', {
+        this.snackBar.open('Error during download', 'Close', {
           duration: 5000
         });
       }
     });
   }
-
-
 
   private formatDuration(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
@@ -327,16 +312,16 @@ export class VideoService {
     const parts: string[] = [];
 
     if (hours > 0) {
-      parts.push(`${hours} ${hours === 1 ? 'ora' : 'ore'}`);
+      parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
     }
     if (minutes > 0) {
-      parts.push(`${minutes} ${minutes === 1 ? 'minuto' : 'minuti'}`);
+      parts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
     }
     if (secs > 0 && hours === 0) {
-      parts.push(`${secs} ${secs === 1 ? 'secondo' : 'secondi'}`);
+      parts.push(`${secs} ${secs === 1 ? 'second' : 'seconds'}`);
     }
 
-    return parts.join(' e ') || '0 secondi';
+    return parts.join(' and ') || '0 seconds';
   }
 
   private isSupportedVideoFormat(

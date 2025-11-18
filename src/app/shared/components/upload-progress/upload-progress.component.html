@@ -3,7 +3,7 @@
        [class.expanded]="isExpanded()"
        animate.enter="slide-up">
     
-    <!-- Header sempre visibile -->
+    <!-- Always visible header -->
     <div class="upload-header" (click)="toggleExpand()">
       <div class="header-left">
         <mat-icon class="expand-icon" [class.rotated]="isExpanded()">
@@ -12,9 +12,9 @@
         <span class="upload-title">
           @if (uploadService.uploadingCount() > 0) {
             {{ uploadService.uploadingCount() }} 
-            {{ uploadService.uploadingCount() === 1 ? 'video in caricamento' : 'video in caricamento' }}
+            {{ uploadService.uploadingCount() === 1 ? 'video uploading' : 'videos uploading' }}
           } @else {
-            Caricamenti ({{ uploadService.uploadCount() }})
+            Uploads ({{ uploadService.uploadCount() }})
           }
         </span>
       </div>
@@ -24,14 +24,14 @@
           <button mat-icon-button 
                   (click)="uploadService.clearCompleted(); $event.stopPropagation()"
                   class="clear-btn"
-                  matTooltip="Rimuovi completati">
+                  matTooltip="Clear completed">
             <mat-icon>clear_all</mat-icon>
           </button>
         }
       </div>
     </div>
 
-    <!-- Lista upload (visibile quando espansa) -->
+    <!-- Upload list (visible when expanded) -->
     @if (isExpanded()) {
       <div class="upload-list" animate.enter="expand-down">
         @for (upload of uploadService.activeUploads(); track upload.tempId) {
@@ -49,11 +49,11 @@
                 <div class="upload-name">{{ upload.title || upload.fileName }}</div>
                 <div class="upload-status">
                   @if (upload.status === 'uploaded') {
-                    <span class="success">✓ Caricamento completato</span>
+                    <span class="success">✓ Upload complete</span>
                   } @else if (upload.status === 'error') {
-                    <span class="error">✗ {{ upload.errorMessage || 'Errore' }}</span>
+                    <span class="error">✗ {{ upload.errorMessage || 'Error' }}</span>
                   } @else {
-                    <span>Caricamento: {{ upload.progress }}%</span>
+                    <span>Uploading: {{ upload.progress }}%</span>
                   }
                 </div>
               </div>

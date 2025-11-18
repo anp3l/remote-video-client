@@ -59,12 +59,12 @@ export class VideoApiService {
       formData.append('tags', JSON.stringify(metadata.tags));
 
       return this.http.post<any>(`${this.apiUrl}/videos`, formData, {
-        reportProgress: true,  // abilita il tracking del progresso
-        observe: 'events'      // osserva gli eventi invece della risposta
+        reportProgress: true,
+        observe: 'events'
       }).pipe(
         map((event: HttpEvent<any>) => {
           if (event.type === HttpEventType.UploadProgress) {
-            // Evento di progresso
+            // Progress event 
             const progress = event.total 
               ? Math.round((100 * event.loaded) / event.total)
               : 0;

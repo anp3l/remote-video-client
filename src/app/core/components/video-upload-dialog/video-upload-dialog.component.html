@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Upload Nuovo Video</h2>
+<h2 mat-dialog-title>Upload New Video</h2>
 
 <mat-dialog-content class="!p-6">
   <form [formGroup]="uploadForm" class="space-y-4">
@@ -9,7 +9,7 @@
               (click)="videoFileInput.click()"
               [disabled]="isValidating()">
         <mat-icon>upload_file</mat-icon>
-        Scegli Video
+        Choose Video
       </button>
       <input #videoFileInput
             type="file" 
@@ -22,7 +22,7 @@
       @if (isValidating()) {
         <p class="mt-1 text-sm text-blue-600">
           <mat-icon class="inline-block w-4 h-4 animate-spin">sync</mat-icon>
-          Validazione video in corso...
+          Validating...
         </p>
       }
       
@@ -45,7 +45,7 @@
               mat-raised-button
               (click)="thumbnailFileInput.click()">
         <mat-icon>image</mat-icon>
-        Scegli Immagine
+        Choose Image
       </button>
       <input #thumbnailFileInput
             type="file" 
@@ -67,37 +67,37 @@
     </div>
 
     <mat-form-field class="w-full"  appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Titolo</mat-label>
+      <mat-label>Title</mat-label>
       <input matInput 
              formControlName="title"
-             placeholder="Inserisci titolo video">
+             placeholder="Insert video title">
       @if (uploadForm.get('title')?.hasError('required')) {
-        <mat-error>Il titolo è obbligatorio</mat-error>
+        <mat-error>Title required</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Descrizione</mat-label>
+      <mat-label>Description</mat-label>
       <textarea matInput 
                 formControlName="description"
                 rows="4"
-                placeholder="Inserisci descrizione"></textarea>
+                placeholder="Insert video description"></textarea>
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Categoria</mat-label>
+      <mat-label>Category</mat-label>
       <mat-select formControlName="category">
         @for (cat of categories; track cat) {
           <mat-option [value]="cat">{{ cat }}</mat-option>
         }
       </mat-select>
       @if (uploadForm.get('category')?.hasError('required')) {
-        <mat-error>La categoria è obbligatoria</mat-error>
+        <mat-error>Ctaegory required</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
-      <mat-label>Tags (separati da virgola)</mat-label>
+      <mat-label>Tags (divided by comma)</mat-label>
       <input matInput 
              formControlName="tags"
              placeholder="es. tutorial, beginner, web development">
@@ -107,13 +107,13 @@
 
 <mat-dialog-actions align="end" class="!p-6 !pt-0">
   <button mat-button (click)="onCancel()">
-    Annulla
+    Cancel
   </button>
   <button mat-raised-button 
           color="primary"
           (click)="onSubmit($event)"
           [disabled]="!uploadForm.valid || !videoFile()"
           #submitBtn>
-    Carica Video
+    Upload Video
   </button>
 </mat-dialog-actions>

@@ -11,8 +11,7 @@
           <span class="font-bold">Video Library</span>
         </div>
         <p class="text-sm text-muted-foreground mb-4">
-          La tua soluzione completa per gestire e organizzare la tua collezione di video in modo
- semplice ed efficiente.
+          Your complete solution for managing and organizing your video collection simply and efficiently.
         </p>
         <div class="flex gap-2">
           @for (social of socialLinks; track social.label) {
@@ -43,7 +42,7 @@
 
       <!-- Support Links -->
       <div>
-        <h3 class="mb-4">Supporto</h3>
+        <h3 class="mb-4">Support</h3>
         <ul class="space-y-2">
           @for (link of links.support; track link.label) {
             <li>
@@ -59,7 +58,7 @@
 
       <!-- Legal Links -->
       <div>
-        <h3 class="mb-4">Legale</h3>
+        <h3 class="mb-4">Legal</h3>
         <ul class="space-y-2">
           @for (link of links.legal; track link.label) {
             <li>
@@ -79,12 +78,12 @@
     <!-- Footer Bottom -->
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
       <p class="!m-0">
-        © {{ currentYear }} Video Library. Tutti i diritti riservati.
+        © {{ currentYear }} Video Library. All rights reserved.
       </p>
       <div class="flex items-center gap-4">
         <span>v{{ appVersion }}</span>
         <span>•</span>
-        <span>Realizzato con Angular {{ getAngularVersion() }}</span>
+        <span>Built with Angular {{ getAngularVersion() }}</span>
       </div>
     </div>
   </div>

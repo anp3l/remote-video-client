@@ -30,24 +30,23 @@ export class AppFooterComponent {
 
   links = {
     about: [
-      { label: 'Chi Siamo', url: '/about' },
+      { label: 'About Us', url: '/about' },
       { label: 'Blog', url: '/blog' },
-      { label: 'Carriere', url: '/careers' }
+      { label: 'Careers', url: '/careers' }
     ],
     support: [
       { label: 'FAQ', url: '/faq' },
-      { label: 'Documentazione', url: '/docs' },
-      { label: 'Supporto', url: '/support' }
+      { label: 'Documentation', url: '/docs' },
+      { label: 'Support', url: '/support' }
     ],
     legal: [
       { label: 'Privacy Policy', url: '/privacy' },
-      { label: 'Termini di Servizio', url: '/terms' },
+      { label: 'Terms of Service', url: '/terms' },
       { label: 'Cookie Policy', url: '/cookies' }
     ]
   };
 
   onLinkClick(url: string, event: Event): void {
-
     if (url.startsWith('/')) {
       event.preventDefault();
       console.log('Navigation to:', url);
