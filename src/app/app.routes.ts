@@ -3,6 +3,7 @@ import { LoginComponent } from './core/components/login/login.component';
 import { SignupComponent } from './core/components/signup/signup.component';
 import { VideoLibraryComponent } from './core/components/video-library/video-library.component';
 import { authGuard } from './core/guards/auth-guard';
+import { uploadGuard } from './core/guards/upload-guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -11,7 +12,8 @@ export const routes: Routes = [
  {
     path: '',
     component: VideoLibraryComponent,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+    canDeactivate: [uploadGuard]
   },
 
   { path: '**', redirectTo: '' }
