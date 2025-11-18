@@ -13,7 +13,8 @@
     (sortByChange)="onSortByChange($event)"
     (viewModeChange)="onViewModeChange($event)"
     (upload)="openUploadDialog()"
-    (refresh)="refreshVideos()">
+    (refresh)="refreshVideos()"
+    (logout)="handleLogout()">
   </app-library-header>
 </div>
 
@@ -33,3 +34,5 @@
     (uploadClick)="openUploadDialog()">
   </app-video-grid>
 </main>
+<app-upload-progress></app-upload-progress>
+<app-footer></app-footer>

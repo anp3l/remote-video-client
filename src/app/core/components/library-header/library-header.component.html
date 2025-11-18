@@ -11,8 +11,7 @@
             <h1 class="!m-0">Video Library</h1>
           </div>
           <p class="text-sm text-muted-foreground !m-0 !mt-1">
-            {{ videoCount }} video{{ videoCount !== 1 ? 's' : '' }} • 
-            {{ filteredCount }} visualizzat{{ filteredCount !== 1 ? 'i' : 'o' }}
+            Showing {{ filteredCount }} of {{ videoCount }} video{{ videoCount !== 1 ? 's' : '' }}
           </p>
         </div>
       </div>
@@ -22,15 +21,21 @@
         <button mat-icon-button 
                 (click)="onRefreshClick()"
                 [disabled]="loading"
-                matTooltip="Ricarica">
+                matTooltip="Refresh">
           <mat-icon [class.animate-spin]="loading">refresh</mat-icon>
         </button>
         
-        <button mat-raised-button 
+        <button mat-icon-button 
                 color="primary"
-                (click)="onUploadClick()">
+                (click)="onUploadClick()"
+                matTooltip="Upload Video">
           <mat-icon class="mr-2">upload</mat-icon>
-          Carica Video
+        </button>
+        <button mat-icon-button 
+                color="warn"
+                (click)="onLogoutClick()"
+                matTooltip="Logout">
+          <mat-icon class="mr-2">logout</mat-icon>
         </button>
       </div>
     </div>
@@ -40,7 +45,7 @@
       <mat-form-field class="flex-1" appearance="outline" subscriptSizing="dynamic">
         <mat-icon matPrefix>search</mat-icon>
         <input matInput 
-               placeholder="Cerca video..."
+               placeholder="Search video..."
                [ngModel]="searchQuery"
                (ngModelChange)="onSearchChange($event)">
       </mat-form-field>
@@ -48,8 +53,8 @@
       <mat-form-field appearance="outline" class="w-full sm:w-48" subscriptSizing="dynamic">
         <mat-select [value]="categoryFilter"
                     (selectionChange)="onCategoryChange($event.value)"
-                    placeholder="Tutte le Categorie">
-          <mat-option value="all">Tutte le Categorie</mat-option>
+                    placeholder="All categories">
+          <mat-option value="all">All categories</mat-option>
           @for (cat of categories; track cat) {
             <mat-option [value]="cat">{{ cat }}</mat-option>
           }
@@ -61,8 +66,8 @@
         <mat-select [value]="sortBy"
                     (selectionChange)="onSortChange($event.value)">
           <mat-option value="date">Data Upload</mat-option>
-          <mat-option value="title">Titolo</mat-option>
-          <mat-option value="duration">Durata</mat-option>
+          <mat-option value="title">Title</mat-option>
+          <mat-option value="duration">Duration</mat-option>
         </mat-select>
       </mat-form-field>
 

@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { Video, ViewMode, SortBy } from '../../models/video.model';
 import { VideoService } from '../../services/video.service';
-
+import { AuthService } from '../../services/auth.service';
 import { LibraryHeaderComponent } from '../library-header/library-header.component';
 import { VideoGridComponent } from '../video-grid/video-grid.component';
 import { VideoUploadDialogComponent } from '../video-upload-dialog/video-upload-dialog.component';
 import { VideoEditDialogComponent } from '../video-edit-dialog/video-edit-dialog.component';
 import { VideoPlayerDialogComponent } from '../video-player-dialog/video-player-dialog.component';
 import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-confirm-dialog.component';
+import { AppFooterComponent } from '../../../shared/components/app-footer/app-footer.component';
+import { UploadProgressComponent } from '../../../shared/components/upload-progress/upload-progress.component';
 
 @Component({
   selector: 'app-video-library',
@@ -18,12 +20,15 @@ import { DeleteConfirmDialogComponent } from '../delete-confirm-dialog/delete-co
     CommonModule,
     LibraryHeaderComponent,
     VideoGridComponent,
+    AppFooterComponent,
+    UploadProgressComponent
   ],
   templateUrl: './video-library.component.html',
   styleUrls: ['./video-library.component.scss']
 })
 export class VideoLibraryComponent {
   private videoService = inject(VideoService);
+  private authService = inject(AuthService);
   private dialog = inject(MatDialog);
 
   searchQuery = signal('');
@@ -135,5 +140,9 @@ export class VideoLibraryComponent {
 
   downloadVideo(video: Video): void {
     this.videoService.downloadVideo(video.id, video.title);
+  }
+
+  handleLogout(): void {
+    this.authService.logout();
   }
 }

@@ -47,6 +47,7 @@ export class LibraryHeaderComponent {
   @Output() viewModeChange = new EventEmitter<ViewMode>();
   @Output() upload = new EventEmitter<void>();
   @Output() refresh = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
 
   onSearchChange(value: string): void {
     this.searchQueryChange.emit(value);
@@ -70,5 +71,9 @@ export class LibraryHeaderComponent {
 
   onRefreshClick(): void {
     this.refresh.emit();
+  }
+  
+  onLogoutClick(): void {
+    this.logout.emit();
   }
 }
