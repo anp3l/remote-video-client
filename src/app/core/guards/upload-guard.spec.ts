@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
-
+import { CanDeactivateFn } from '@angular/router';
 import { uploadGuard } from './upload-guard';
 
 describe('uploadGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
+  const executeGuard: CanDeactivateFn<any> = (...guardParameters) => 
       TestBed.runInInjectionContext(() => uploadGuard(...guardParameters));
 
   beforeEach(() => {

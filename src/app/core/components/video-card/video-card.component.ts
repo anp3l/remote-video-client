@@ -61,6 +61,15 @@ export class VideoCardComponent {
     this.delete.emit();
   }
 
+/**
+ * Checks if the video has been uploaded to the server.
+ *
+ * If the video has an ID, it will poll the server for the video's status until it is uploaded.
+ * If the video has not been uploaded, it will return false.
+ * If the video has been uploaded, it will return true.
+ * @param video The video to be checked.
+ * @returns True if the video has been uploaded, false otherwise.
+ */
   isVideoUploaded(video: Video): boolean {
     const id = video.id;
     if (!id) return false;
@@ -128,6 +137,13 @@ export class VideoCardComponent {
     return false;
   }
   
+/**
+ * Returns the static thumbnail URL for the given video.
+ * The static thumbnail URL is stored in a cache and is only retrieved from the cache.
+ * If the video ID is not found in the cache, an empty string is returned.
+ * @param video The video object for which to retrieve the static thumbnail URL.
+ * @returns The static thumbnail URL for the given video.
+ */
   resolveThumbnail(video: Video): string {
     return this.staticThumbnailCache()[video.id!];
   }

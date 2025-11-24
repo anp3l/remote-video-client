@@ -57,6 +57,13 @@ export class VideoPlayerDialogComponent {
     });
   }
 
+/**
+ * Initializes the video player by subscribing to the signed URLs for the video.
+ * Once the signed URLs are received, the video player is created with the given options.
+ * The video player is then configured to use the Video.js library with the given options.
+ * The Video.js library is used to play the video.
+ * The video player is then configured to use the given controls, such as the play button, pause button, and volume control.
+ */
   private initializePlayer(): void {
     const videoId = this.data.video.id;
     if (!videoId) return;

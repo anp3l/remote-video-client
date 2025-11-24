@@ -51,6 +51,13 @@ export class VideoUploadDialogComponent {
     tags: ['']
   });
 
+  /**
+   * Handles the video file selection event.
+   * Validates the selected video file using the video service.
+   * If the file is valid, sets the video file state to the selected file.
+   * If the file is not valid, sets the validation error state to the reason provided by the video service,
+   * and resets the selected file input.
+   */
   async onVideoFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -85,6 +92,13 @@ export class VideoUploadDialogComponent {
     }
   }
 
+  /**
+   * Handles the thumbnail file selection event.
+   * Validates the selected thumbnail file using the video service.
+   * If the file is valid, sets the thumbnail file state to the selected file.
+   * If the file is not valid, sets the validation error state to the reason provided by the video service,
+   * and resets the selected file input.
+   */
   async onThumbnailFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -141,6 +155,12 @@ export class VideoUploadDialogComponent {
     }
   }
 
+/**
+ * Triggers a shrink animation on the progress bar by setting the target position CSS variables.
+ * The target position is the position of the progress bar in the dialog.
+ * The animation is triggered by adding the 'shrink-to-corner' class to the dialog container.
+ * The animation is defined in the SCSS file and uses the '--target-x' and '--target-y' CSS variables.
+ */
   private triggerShrinkAnimation(): void {
     // Target position of the progress bar
     const targetX = window.innerWidth - 220;

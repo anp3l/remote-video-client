@@ -43,6 +43,12 @@ export class VideoEditDialogComponent {
     tags: [this.data.video.tags.join(', ')]
   });
 
+/**
+ * Submits the edited video form data to the video service.
+ * If the form is valid, it sets the saving state to true and updates the video.
+ * If the update is successful, it closes the dialog with a true value.
+ * If the update fails, it logs an error and sets the saving state to false.
+ */
   async onSubmit(): Promise<void> {
     if (this.editForm.valid) {
       this.saving.set(true);
