@@ -36,6 +36,7 @@ A modern Angular application for managing and streaming your personal video libr
 ### 1. Clone the repository
 
 git clone https://github.com/andrea-peluso/remote-video-client.git
+
 cd remote-video-client
 
 ### 2. Install dependencies
@@ -47,14 +48,19 @@ npm install
 Edit `src/app/core/config/app.config.ts` if your backend is not running on the default URL:
 
 export const AppConfig = {
+
 apiBaseUrl: 'http://localhost:3070', // Change if needed
+
 // ... other config
+
 };
 
 ### 4. Start the development server
 
 npm start
+
 or
+
 ng serve
 
 The app will be available at [**http://localhost:4200**](http://localhost:4200)
@@ -93,7 +99,7 @@ The app will be available at [**http://localhost:4200**](http://localhost:4200)
 ---
 
 ## Project Structure
-
+```
 src/
 ├── app/
 │ ├── core/ # Core application modules
@@ -102,7 +108,7 @@ src/
 │ │ │ ├── library-header/ # Main navigation header
 │ │ │ ├── login/ # Login page
 │ │ │ ├── signup/ # Registration page
-│ │ │ ├── video-card/ # # Video card with thumbnail and metadata 
+│ │ │ ├── video-card/ # Video card with thumbnail and metadata 
 │ │ │ ├── video-edit-dialog/ # Dialog for editing video metadata
 │ │ │ ├── video-grid/ # Grid/list view for videos
 │ │ │ ├── video-library/ # Main library page container
@@ -138,7 +144,7 @@ src/
 ├── index.html # Main HTML entry point
 ├── main.ts # Application bootstrap
 └── styles.scss # Global styles and theme
-
+```
 ### Key Components
 
 **Core Components:**
@@ -218,6 +224,7 @@ Output will be in `dist/remote-video-client/browser/`
 After building, you can serve the production build locally for testing:
 
 cd dist/remote-video-client/browser
+
 http-server -p 8080 -c-1 --proxy http://localhost:8080?
 
 **Note**: You need to have `http-server` installed globally:
