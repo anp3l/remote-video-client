@@ -8,6 +8,39 @@ A modern Angular application for managing and streaming your personal video libr
 
 ---
 
+## Screenshots
+
+<table>
+  <tr>
+    <td>Login Page</td>
+    <td>Empty Library State</td>
+  </tr>
+  <tr>
+    <td><a href="screenshots/login.png"><img src="screenshots/login.png" width="400"></a></td>
+    <td><a href="screenshots/empty.png"><img src="screenshots/empty.png" width="400"></a></td>
+  </tr>
+  <tr>
+    <td>Library with Videos</td>
+    <td>Upload Interface</td>
+  </tr>
+  <tr>
+    <td><a href="screenshots/library.png"><img src="screenshots/library.png" width="400"></a></td>
+    <td><a href="screenshots/upload.png"><img src="screenshots/upload.png" width="400"></a></td>
+  </tr>
+  <tr>
+    <td>Edit Video</td>
+    <td>Video Player</td>
+  </tr>
+  <tr>
+    <td><a href="screenshots/edit.png"><img src="screenshots/edit.png" width="400"></a></td>
+    <td><a href="screenshots/player.png"><img src="screenshots/player.png" width="400"></a></td>
+  </tr>
+</table>
+
+
+
+---
+
 ## Features
 
 - 🔐 **User Authentication**: Secure signup and login with JWT token management
