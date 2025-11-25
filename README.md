@@ -178,33 +178,6 @@ src/
 ├── main.ts # Application bootstrap
 └── styles.scss # Global styles and theme
 ```
-### Key Components
-
-**Core Components:**
-- **login/signup**: Handle user authentication
-- **video-library**: Main library page
-- **video-grid**: Display videos in grid or list layout
-- **video-card**: Individual video card displaying thumbnail and metadata (title, duration, category, tags)
-- **video-upload-dialog**: Dialog for uploading new videos
-- **video-edit-dialog**: Dialog for editing video metadata
-- **video-player-dialog**: Overlay player with Video.js
-- **delete-confirm-dialog**: Confirmation dialog for video deletion
-- **library-header**: Navigation header with logout
-
-**Services:**
-- **auth.service**: Manages login, signup, JWT tokens, and user state
-- **video-api.service**: HTTP calls to backend API
-- **video.service**: Business logic and video state management
-- **upload-progress.service**: Tracks multiple upload progress
-
-**Guards:**
-- **auth-guard**: Protects routes requiring authentication
-- **upload-guard**: Validates upload operations
-
-**Pipes:**
-- **duration-format**: Converts seconds to HH:MM:SS format
-- **file-size**: Converts bytes to readable KB/MB/GB
-
 ---
 
 ## Configuration
@@ -324,16 +297,4 @@ This frontend connects to the [Remote Video Library Backend](https://github.com/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Author
-
-Built by [Andrea](https://github.com/anp3l)  
-Part of the **Remote Video Library** project suite
-
----
-
-*Contributions and suggestions welcome!*
-
 
