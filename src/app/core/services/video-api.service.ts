@@ -214,4 +214,19 @@ export class VideoApiService {
       expiresAt: number;
     }>(`${this.apiUrl}/videos/${videoId}/signed-url`, {});
   }
+
+  refreshSignedToken(videoId: string): Observable<{
+    expires: string;
+    signature: string;
+    uid: string;
+    expiresAt: number;
+  }> {
+    return this.http.post<{
+      expires: string;
+      signature: string;
+      uid: string;
+      expiresAt: number;
+    }>(`${this.apiUrl}/videos/${videoId}/refresh-token`, {});
+  }
+
 }
