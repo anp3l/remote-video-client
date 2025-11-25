@@ -27,7 +27,7 @@ A modern Angular application for managing and streaming your personal video libr
 - **Node.js** v18 or higher
 - **Angular CLI** v20 or higher
 - Modern web browser (Chrome, Firefox, Safari, Edge)
-- Backend server running (see [remote-video-server](https://github.com/andrea-peluso/remote-video-server))
+- Backend server running (see [remote-video-server](https://github.com/anp3l/remote-video-server))
 
 ---
 
@@ -35,7 +35,7 @@ A modern Angular application for managing and streaming your personal video libr
 
 ### 1. Clone the repository
 
-git clone https://github.com/andrea-peluso/remote-video-client.git
+git clone https://github.com/anp3l/remote-video-client.git
 
 cd remote-video-client
 
@@ -252,7 +252,7 @@ The project uses Prettier for code formatting. Config available in `package.json
 
 ## API Integration
 
-This frontend connects to the [Remote Video Library Backend](https://github.com/andrea-peluso/remote-video-server).
+This frontend connects to the [Remote Video Library Backend](https://github.com/anp3l/remote-video-server).
 
 - JWT tokens are automatically attached to protected API requests via HTTP interceptor
 - Authentication state is managed globally with RxJS BehaviorSubject
@@ -296,7 +296,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Author
 
-Built by [Andrea](https://github.com/andrea-peluso)  
+Built by [Andrea](https://github.com/anp3l)  
 Part of the **Remote Video Library** project suite
 
 ---
