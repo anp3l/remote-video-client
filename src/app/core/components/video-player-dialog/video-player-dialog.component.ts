@@ -14,11 +14,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import videojs from 'video.js';
+import 'jb-videojs-hls-quality-selector';
 import type Player from 'video.js/dist/types/player';
 import { Video } from '../../models/video.model';
 import { VideoApiService } from '../../services/video-api.service';
 import { DurationFormatPipe } from '../../../shared/pipes/duration-format-pipe';
 import { interval, takeWhile } from 'rxjs';
+import { FileSizePipe } from '../../../shared/pipes/file-size-pipe';
 
 @Component({
   selector: 'app-video-player-dialog',
@@ -29,7 +31,8 @@ import { interval, takeWhile } from 'rxjs';
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
-    DurationFormatPipe
+    DurationFormatPipe,
+    FileSizePipe
   ],
   templateUrl: './video-player-dialog.component.html',
   styleUrls: ['./video-player-dialog.component.scss'],
@@ -97,6 +100,8 @@ export class VideoPlayerDialogComponent {
             },
           ],
         });
+
+        (this.player as any).hlsQualitySelector();
 
         this.player.ready(() => {
           this.setupXhrInterceptor(videoId);
