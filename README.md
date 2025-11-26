@@ -79,15 +79,12 @@ npm install
 ### 3. Configure the backend URL
 
 Edit `src/app/core/config/app.config.ts` if your backend is not running on the default URL:
-
+```
 export const AppConfig = {
-
 apiBaseUrl: 'http://localhost:3070', // Change if needed
-
 // ... other config
-
 };
-
+```
 ### 4. Start the development server
 
 npm start
@@ -111,7 +108,7 @@ The app will be available at [**http://localhost:4200**](http://localhost:4200)
 ### Upload Videos
 
 1. Click the upload button on the main page
-2. Select one or more video files (MP4, MOV, AVI supported)
+2. Select video file (MP4, MOV, AVI supported)
 3. Optionally add a custom thumbnail (JPEG, PNG, WebP)
 4. Fill in metadata: title, description, tags, category
 5. Click upload and monitor progress
@@ -248,12 +245,12 @@ npm test
 ### Code style
 
 The project uses Prettier for code formatting. Config available in `package.json`.
-
+```
 "prettier": {
 "printWidth": 100,
 "singleQuote": true
 }
-
+```
 ---
 
 ## API Integration
@@ -281,16 +278,13 @@ This frontend connects to the [Remote Video Library Backend](https://github.com/
 ## Future Work
 
 - Full-text search across video metadata
-- Advanced filtering and sorting options
 - Video playlists and collections
 - User profile and settings page
 - Video sharing capabilities
 - Dark mode theme toggle
-- Progressive Web App (PWA) support
 - Drag-and-drop upload
-- Batch operations (delete, edit multiple videos)
+- Batch operations (delete multiple videos)
 - Complete unit and integration test coverage
-- E2E testing with Cypress or Playwright
 
 ---
 
