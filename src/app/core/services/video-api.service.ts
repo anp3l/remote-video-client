@@ -39,7 +39,7 @@ export class VideoApiService {
       description: v.description,
       thumbnail: v.thumbnail,
       videoUrl: v.videoUrl,
-      duration: v.duration,
+      duration: Number(v.duration),
       uploadDate: new Date(v.uploadDate),
       size: v.size,
       category: v.category,
