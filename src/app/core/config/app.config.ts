@@ -1,5 +1,13 @@
 export const AppConfig = {
   apiBaseUrl: 'http://localhost:3070',
+  portfolio: {
+    author: 'anp3l',
+    githubUrl: 'https://github.com/anp3l',
+    linkedinUrl: 'https://linkedin.com/in/andrea-peluso-052868386',
+    repoUrl: 'https://github.com/anp3l/remote-video-client' 
+  },
+  
+  version: '1.0.0',
   defaultViewMode: 'grid' as const,
   itemsPerPage: 20,
   

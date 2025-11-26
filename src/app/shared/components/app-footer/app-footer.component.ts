@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, VERSION } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { AppConfig } from '../../../core/config/app.config';
 
 @Component({
   selector: 'app-footer',
@@ -20,40 +21,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class AppFooterComponent {
   currentYear = new Date().getFullYear();
-  appVersion = '1.0.0';
+  angularVersion = VERSION.full;
   
+  readonly config = AppConfig;
+
   socialLinks = [
-    { icon: 'code', label: 'GitHub', url: 'https://github.com' },
-    { icon: 'language', label: 'Website', url: 'https://example.com' },
-    { icon: 'email', label: 'Contact', url: 'mailto:info@example.com' }
-  ];
-
-  links = {
-    about: [
-      { label: 'About Us', url: '/about' },
-      { label: 'Blog', url: '/blog' },
-      { label: 'Careers', url: '/careers' }
-    ],
-    support: [
-      { label: 'FAQ', url: '/faq' },
-      { label: 'Documentation', url: '/docs' },
-      { label: 'Support', url: '/support' }
-    ],
-    legal: [
-      { label: 'Privacy Policy', url: '/privacy' },
-      { label: 'Terms of Service', url: '/terms' },
-      { label: 'Cookie Policy', url: '/cookies' }
-    ]
-  };
-
-  onLinkClick(url: string, event: Event): void {
-    if (url.startsWith('/')) {
-      event.preventDefault();
-      console.log('Navigation to:', url);
+    { 
+      icon: 'code', 
+      label: 'Source Code (GitHub)', 
+      url: this.config.portfolio.repoUrl 
+    },
+    { 
+      icon: 'person', 
+      label: 'My GitHub Profile', 
+      url: this.config.portfolio.githubUrl 
     }
-  }
-  
-  getAngularVersion(): string {
-    return '20';
-  }
+  ];
 }

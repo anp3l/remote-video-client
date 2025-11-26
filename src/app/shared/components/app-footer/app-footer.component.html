@@ -1,90 +1,56 @@
 <footer class="app-footer bg-card border-t mt-auto">
   <div class="container mx-auto px-4 py-8">
-    <!-- Main Footer Content -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-      <!-- About Section -->
-      <div>
-        <div class="flex items-center gap-2 mb-4">
+    
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+      
+      <div class="max-w-md">
+        <div class="flex items-center gap-2 mb-2">
           <div class="h-8 w-8 rounded bg-primary flex items-center justify-center">
             <mat-icon class="text-white !text-base">video_library</mat-icon>
           </div>
-          <span class="font-bold">Video Library</span>
+          <span class="font-bold text-lg">Video Library</span>
         </div>
-        <p class="text-sm text-muted-foreground mb-4">
-          Your complete solution for managing and organizing your video collection simply and efficiently.
+        <p class="text-sm text-muted-foreground">
+          A modern full-stack video management solution.
         </p>
-        <div class="flex gap-2">
-          @for (social of socialLinks; track social.label) {
-            <button mat-icon-button 
-                    [matTooltip]="social.label"
-                    (click)="onLinkClick(social.url, $event)">
-              <mat-icon class="!text-base">{{ social.icon }}</mat-icon>
-            </button>
-          }
-        </div>
       </div>
 
-      <!-- About Links -->
-      <div>
-        <h3 class="mb-4">About</h3>
-        <ul class="space-y-2">
-          @for (link of links.about; track link.label) {
-            <li>
-              <a [href]="link.url" 
-                 (click)="onLinkClick(link.url, $event)"
-                 class="text-sm text-muted-foreground hover:text-primary transition-colors">
-                {{ link.label }}
-              </a>
-            </li>
-          }
-        </ul>
+      <div class="flex gap-2">
+        @for (social of socialLinks; track social.label) {
+          <a mat-icon-button 
+             [href]="social.url"
+             [matTooltip]="social.label"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="!text-muted-foreground hover:!text-primary transition-colors">
+            <mat-icon>{{ social.icon }}</mat-icon>
+          </a>
+        }
       </div>
 
-      <!-- Support Links -->
-      <div>
-        <h3 class="mb-4">Support</h3>
-        <ul class="space-y-2">
-          @for (link of links.support; track link.label) {
-            <li>
-              <a [href]="link.url"
-                 (click)="onLinkClick(link.url, $event)"
-                 class="text-sm text-muted-foreground hover:text-primary transition-colors">
-                {{ link.label }}
-              </a>
-            </li>
-          }
-        </ul>
-      </div>
-
-      <!-- Legal Links -->
-      <div>
-        <h3 class="mb-4">Legal</h3>
-        <ul class="space-y-2">
-          @for (link of links.legal; track link.label) {
-            <li>
-              <a [href]="link.url"
-                 (click)="onLinkClick(link.url, $event)"
-                 class="text-sm text-muted-foreground hover:text-primary transition-colors">
-                {{ link.label }}
-              </a>
-            </li>
-          }
-        </ul>
-      </div>
     </div>
 
-    <mat-divider class="mb-6"></mat-divider>
+    <mat-divider class="my-6"></mat-divider>
 
-    <!-- Footer Bottom -->
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
       <p class="!m-0">
-        © {{ currentYear }} Video Library. All rights reserved.
+        © {{ currentYear }} {{ config.portfolio.author }}. Open Source Project.
       </p>
+      
       <div class="flex items-center gap-4">
-        <span>v{{ appVersion }}</span>
+        <span class="flex items-center gap-1">
+          v{{ config.version }}
+        </span>
         <span>•</span>
-        <span>Built with Angular {{ getAngularVersion() }}</span>
+        <span>Angular v{{ angularVersion }}</span>
+        <span>•</span>
+        <a [href]="config.portfolio.repoUrl + '/blob/main/README.md'" 
+           target="_blank" 
+           class="hover:text-primary hover:underline">
+           Documentation
+        </a>
       </div>
     </div>
+
   </div>
 </footer>
