@@ -64,13 +64,13 @@ export class VideoPlayerDialogComponent {
     });
   }
 
-/**
- * Initializes the video player by subscribing to the signed URLs for the video.
- * Once the signed URLs are received, the video player is created with the given options.
- * The video player is then configured to use the Video.js library with the given options.
- * The Video.js library is used to play the video.
- * The video player is then configured to use the given controls, such as the play button, pause button, and volume control.
- */
+  /**
+   * Initializes the video player by subscribing to the signed URLs for the video.
+   * Once the signed URLs are received, the video player is created with the given options.
+   * The video player is then configured to use the Video.js library with the given options.
+   * The Video.js library is used to play the video.
+   * The video player is then configured to use the given controls, such as the play button, pause button, and volume control.
+   */
   private initializePlayer(): void {
     const videoId = this.data.video.id;
     if (!videoId) return;
@@ -107,7 +107,7 @@ export class VideoPlayerDialogComponent {
           this.setupXhrInterceptor(videoId);
         });
 
-        // Avvia il polling per refresh token
+        // Start polling for token refresh
         this.startTokenRefreshPolling(videoId, urls.expiresAt);
       },
       error: (error) => {
@@ -115,16 +115,19 @@ export class VideoPlayerDialogComponent {
       }
     });
   }
-/**
- * Sets up the XHR interceptor for the video player.
- * This is used to add the expiration query parameter to the video stream URL.
- * @param videoId The ID of the video to be played.
- */
-private setupXhrInterceptor(videoId: string): void {
+
+
+  /**
+   * Sets up an XHR interceptor to add the expires parameter to the video stream URL.
+   * This is necessary because the video stream URL is not cached by the browser, so the expires parameter
+   * must be added to the URL every time it is requested.
+   * @param videoId The ID of the video for which to add the expires parameter to the stream URL.
+   */
+  private setupXhrInterceptor(videoId: string): void {
     const tech = this.player?.tech({ IWillNotUseThisInPlugins: true }) as any;
     
     if (tech?.vhs?.xhr) {
-      tech.vhs.xhr.beforeRequest = (options: any) => {
+      tech.vhs.xhr.onRequest((options: any) => {
         if (options.uri.includes(`/videos/stream/${videoId}/`)) {
           if (!options.uri.includes('expires=')) {
             const separator = options.uri.includes('?') ? '&' : '?';
@@ -132,14 +135,14 @@ private setupXhrInterceptor(videoId: string): void {
           }
         }
         return options;
-      };
+      });
     }
   }
 
-/**
- * Updates the current query string with the new expiration, signature, and UID.
- * @param urlParams The URL parameters object containing the expiration, signature, and UID.
- */
+  /**
+   * Updates the current query string with the new expiration, signature, and UID.
+   * @param urlParams The URL parameters object containing the expiration, signature, and UID.
+   */
   private updateQueryString(urlParams: URLSearchParams): void {
     const queryString = `?expires=${urlParams.get('expires')}&signature=${urlParams.get('signature')}&uid=${urlParams.get('uid')}`;
     this.currentQueryString.set(queryString);
