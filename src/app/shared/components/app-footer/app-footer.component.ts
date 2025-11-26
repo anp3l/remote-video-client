@@ -21,7 +21,7 @@ import { AppConfig } from '../../../core/config/app.config';
 })
 export class AppFooterComponent {
   currentYear = new Date().getFullYear();
-  angularVersion = VERSION.full;
+  angularVersion = VERSION.major;
   
   readonly config = AppConfig;
 
