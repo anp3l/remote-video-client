@@ -155,32 +155,32 @@ export class VideoUploadDialogComponent {
     }
   }
 
-/**
- * Triggers a shrink animation on the progress bar by setting the target position CSS variables.
- * The target position is the position of the progress bar in the dialog.
- * The animation is triggered by adding the 'shrink-to-corner' class to the dialog container.
- * The animation is defined in the SCSS file and uses the '--target-x' and '--target-y' CSS variables.
- */
+  /**
+   * Triggers a shrink animation for the upload dialog to shrink towards the target position (progress bar).
+   * The animation is a cubic bezier curve that scales the dialog from 1 to 0.1 and translates it to the target position.
+   * The animation is set to fill forwards, meaning the animation will retain its final state after completion.
+   */
   private triggerShrinkAnimation(): void {
-    // Target position of the progress bar
     const targetX = window.innerWidth - 220;
     const targetY = window.innerHeight - 43;
-    
-    const dialogContainer = document.querySelector('.upload-dialog-panel');
-    
+    const dialogContainer = document.querySelector('.upload-dialog-panel') as HTMLElement;
+
     if (dialogContainer) {
       const rect = dialogContainer.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      
-      // Distance between the center of the dialog and the target position
       const deltaX = targetX - centerX;
       const deltaY = targetY - centerY;
-      
-      (dialogContainer as HTMLElement).style.setProperty('--target-x', `${deltaX}px`);
-      (dialogContainer as HTMLElement).style.setProperty('--target-y', `${deltaY}px`);
-      
-      dialogContainer.classList.add('shrink-to-corner');
+
+      const animation = dialogContainer.animate([
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${deltaX}px, ${deltaY}px) scale(0.1)`, opacity: 0 }
+      ], {
+        duration: 600,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        fill: 'forwards'
+      });
+
     }
   }
 
