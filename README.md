@@ -6,6 +6,9 @@
 
 A modern Angular application for managing and streaming your personal video library remotely. Built with Angular 20, Material Design, and Tailwind CSS, featuring secure authentication, video upload with metadata management, and seamless HLS streaming playback.
 
+> **Note on Architecture:**
+> This project was designed as a distributed cloud architecture where the client is public and connects to user-owned private servers. Currently, the project is configured for **self-hosted local deployment** (Localhost), giving you full control over your data and streaming infrastructure.
+
 ---
 
 ## Screenshots
