@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Video } from '../../models/video.model';
 import { VideoService } from '../../services/video.service';
-import { CATEGORIES } from '../../config/app.config';
+import { CATEGORIES } from '../../config/environment.config';
 
 @Component({
   selector: 'app-video-edit-dialog',

@@ -3,7 +3,7 @@ import { HttpClient , HttpEventType, HttpEvent, HttpResponse} from '@angular/com
 import { Observable, timer } from 'rxjs';
 import { map, switchMap, takeWhile, tap, filter } from 'rxjs/operators';
 import { Video, VideoMetadata } from '../models/video.model';
-import { AppConfig } from '../config/app.config';
+import { EnvironmentConfig } from '../config/environment.config';
 
 export interface UploadProgressEvent {
   type: 'progress' | 'complete';
@@ -15,7 +15,7 @@ export interface UploadProgressEvent {
 })
 export class VideoApiService {
   private http = inject(HttpClient);
-  private apiUrl = AppConfig.apiBaseUrl;
+  private apiUrl = EnvironmentConfig.apiBaseUrl;
 
   /**
    * Returns an observable of all videos stored in the database.

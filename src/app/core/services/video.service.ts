@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Video, VideoMetadata } from '../models/video.model';
 import { VideoApiService } from './video-api.service';
 import { UploadProgressService } from './upload-progress.service';
-import { AppConfig, MB_TO_BYTES } from '../config/app.config';
+import { EnvironmentConfig, MB_TO_BYTES } from '../config/environment.config';
 
 export interface VideoValidationResult {
   file: File;
@@ -19,9 +19,9 @@ export class VideoService {
   private videoApi = inject(VideoApiService);
   private snackBar = inject(MatSnackBar);
   private uploadProgressService = inject(UploadProgressService);
-  private readonly MAX_SIZE_BYTES = AppConfig.maxVideoSizeMB * MB_TO_BYTES;
-  private readonly MAX_DURATION_SECONDS = AppConfig.maxVideoDurationSeconds;
-  private readonly MAX_THUMBNAIL_SIZE_BYTES = AppConfig.maxThumbnailSizeMB * MB_TO_BYTES;
+  private readonly MAX_SIZE_BYTES = EnvironmentConfig.maxVideoSizeMB * MB_TO_BYTES;
+  private readonly MAX_DURATION_SECONDS = EnvironmentConfig.maxVideoDurationSeconds;
+  private readonly MAX_THUMBNAIL_SIZE_BYTES = EnvironmentConfig.maxThumbnailSizeMB * MB_TO_BYTES;
 
 
   videos = signal<Video[]>([]);
@@ -156,7 +156,7 @@ export class VideoService {
         resolve({
           file,
           valid: false,
-          reason: `Unsupported video format. Accepted formats: ${AppConfig.supportedVideoExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
+          reason: `Unsupported video format. Accepted formats: ${EnvironmentConfig.supportedVideoExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
         });
         return;
       }
@@ -227,7 +227,7 @@ export class VideoService {
   validateThumbnailFile(
     file: File,
     maxSize = this.MAX_THUMBNAIL_SIZE_BYTES,
-    supportedFormats = AppConfig.supportedImageFormats
+    supportedFormats = EnvironmentConfig.supportedImageFormats
   ): Promise<{ valid: boolean; reason?: string }> {
     return new Promise((resolve) => {
       // Check supported image MIME type
@@ -239,7 +239,7 @@ export class VideoService {
       if (!this.isSupportedThumbFormat(file.type)) {
         resolve({
           valid: false,
-          reason: `Unsupported image format. Accepted formats: ${AppConfig.supportedImageExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
+          reason: `Unsupported image format. Accepted formats: ${EnvironmentConfig.supportedImageExtensions.map(ext => ext.toUpperCase()).join(', ')}`,
         });
         return;
       }
@@ -395,8 +395,8 @@ export class VideoService {
  */
   private isSupportedVideoFormat(
     type: string
-  ): type is typeof AppConfig.supportedVideoFormats[number] {
-    return (AppConfig.supportedVideoFormats as readonly string[]).includes(type);
+  ): type is typeof EnvironmentConfig.supportedVideoFormats[number] {
+    return (EnvironmentConfig.supportedVideoFormats as readonly string[]).includes(type);
   }
 
 /**
@@ -406,8 +406,8 @@ export class VideoService {
  */
   private isSupportedThumbFormat(
     type: string
-  ): type is typeof AppConfig.supportedImageFormats[number] {
-    return (AppConfig.supportedImageFormats as readonly string[]).includes(type);
+  ): type is typeof EnvironmentConfig.supportedImageFormats[number] {
+    return (EnvironmentConfig.supportedImageFormats as readonly string[]).includes(type);
   }
 
 }

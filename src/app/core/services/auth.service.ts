@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthResponse, LoginRequest, SignupRequest, User } from '../models/auth.model';
-import { AppConfig } from '../config/app.config';
+import { EnvironmentConfig } from '../config/environment.config';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   
-  private readonly API_URL = AppConfig.apiBaseUrl;
+  private readonly API_URL = EnvironmentConfig.apiBaseUrl;
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
 

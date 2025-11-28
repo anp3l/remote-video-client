@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
-import { AppConfig } from '../../../core/config/app.config';
+import { EnvironmentConfig } from '../../../core/config/environment.config';
 
 @Component({
   selector: 'app-footer',
@@ -23,7 +23,7 @@ export class AppFooterComponent {
   currentYear = new Date().getFullYear();
   angularVersion = VERSION.major;
   
-  readonly config = AppConfig;
+  readonly config = EnvironmentConfig;
 
   socialLinks = [
     { 

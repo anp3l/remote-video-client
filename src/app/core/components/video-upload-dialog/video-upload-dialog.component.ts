@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { VideoService } from '../../services/video.service';
-import { CATEGORIES } from '../../config/app.config';
+import { CATEGORIES } from '../../config/environment.config';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({

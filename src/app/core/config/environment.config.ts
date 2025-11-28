@@ -1,4 +1,4 @@
-export const AppConfig = {
+export const EnvironmentConfig= {
   apiBaseUrl: 'http://localhost:3070',
   portfolio: {
     author: 'anp3l',
