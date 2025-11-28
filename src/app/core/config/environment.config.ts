@@ -1,5 +1,7 @@
 export const EnvironmentConfig= {
-  apiBaseUrl: 'http://localhost:3070',
+  apiBaseUrl: window.location.hostname === 'localhost' 
+    ? 'http://localhost:3070' 
+    : 'http://host.docker.internal:3070',
   portfolio: {
     author: 'anp3l',
     githubUrl: 'https://github.com/anp3l',
