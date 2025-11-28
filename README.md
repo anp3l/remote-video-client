@@ -46,88 +46,87 @@ A modern Angular application for managing and streaming your personal video libr
 
 ## Features
 
-- 🔐 **User Authentication**: Secure signup and login with JWT token management
-- 📤 **Video Upload**: Upload videos with optional custom thumbnails (auto-generated if not provided)
-- 📝 **Metadata Management**: Add and edit video titles, descriptions, tags, and categories
-- 🎬 **Video Playback**: Stream videos using Video.js player in a responsive overlay
-- 🔍 **Browse & Filter**: View all your videos in grid or list view with filtering capabilities
-- ✏️ **Edit & Delete**: Modify video metadata or remove videos from your library
-- ⬇️ **Download**: Download original video files
-- 🎨 **Modern UI**: Responsive design with Angular Material components and Tailwind CSS styling
-- 🔒 **Protected Routes**: Authentication guards to secure private content
+- 🔐 **User Authentication**: Secure signup/login with JWT
+- 📤 **Video Upload**: Custom thumbnails & metadata
+- 📝 **Management**: Edit titles, descriptions, tags, categories
+- 🎬 **HLS Streaming**: Adaptive bitrate playback with Video.js
+- 🔍 **Browse**: Grid/list views with filters
+- 🎨 **Modern UI**: Angular Material + Tailwind CSS
+- 🔒 **Security**: Protected routes & auth guards
 
 ---
 
-## Requirements
-
-- **Node.js** v18 or higher
-- **Angular CLI** v20 or higher
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Backend server running (see [remote-video-server](https://github.com/anp3l/remote-video-server))
-
----
-
-## Setup
+## Setup & Installation
 
 ### 1. Clone the repository
-
+```
 git clone https://github.com/anp3l/remote-video-client.git
-
 cd remote-video-client
+```
+### 2. Choose your Deployment Method
 
-### 2. Install dependencies
+#### Option A: Docker
+The easiest way to run the app. Requires **Docker**.
 
+- Build and start the container
+```
+docker-compose up --build
+```
+- App available at: [**http://localhost:4200**](http://localhost:4200)
+- Auto-connects to backend (Docker or Local)
+
+Docker Commands Cheat Sheet:
+```
+#Start (and rebuild if needed)
+docker-compose up --build
+
+#Stop containers
+docker-compose down
+
+#Full Reset (clean images & volumes)
+docker-compose down -v --rmi all
+```
+#### Option B: Manual Setup
+Requires **Node.js v18+** and **Angular CLI v20+**.
+
+1. Install dependencies
+```
 npm install
-
-### 3. Configure the backend URL
-
-Edit `src/app/core/config/app.config.ts` if your backend is not running on the default URL:
 ```
-export const AppConfig = {
-apiBaseUrl: 'http://localhost:3070', // Change if needed
-// ... other config
-};
+2. Start the development server:
 ```
-### 4. Start the development server
-
 npm start
-
-or
-
-ng serve
-
-The app will be available at [**http://localhost:4200**](http://localhost:4200)
+```
+- App available at: [**http://localhost:4200**](http://localhost:4200)
+- Live reload enabled for development
 
 ---
 
-## Usage
+## Backend Connection
+
+The application automatically detects the correct backend URL based on the environment. 
+You can check `src/app/core/config/environment.config.ts`:
+```
+export const EnvironmentConfig = {
+apiBaseUrl: window.location.hostname === 'localhost'
+? 'http://localhost:3070' // Local npm backend
+: 'http://host.docker.internal:3070', // Docker backend
+};
+```
+---
+
+## Usage Guide
 
 ### Authentication
+1. Go to [**http://localhost:4200**](http://localhost:4200)
+2. **Sign up** to create a new account
+3. **Log in** to access your private library
 
-1. Navigate to [**http://localhost:4200**](http://localhost:4200)
-2. **Sign up** with username, email, and password
-3. **Login** with your credentials to access your video library
-
-### Upload Videos
-
-1. Click the upload button on the main page
-2. Select video file (MP4, MOV, AVI supported)
-3. Optionally add a custom thumbnail (JPEG, PNG, WebP)
-4. Fill in metadata: title, description, tags, category
-5. Click upload and monitor progress
-
-### Browse & Play Videos
-
-1. View your videos in grid or list view
-2. Use filters to find specific videos
-3. Click on a video to play it in an overlay player
-4. Player supports HLS streaming for optimized playback
-
-### Manage Videos
-
-- **Edit**: Modify video metadata
-- **Delete**: Remove videos permanently from your library
-- **Download**: Download the original video file
+### Managing Videos
+- **Upload**: Click the upload button, select video (MP4/MOV/AVI), add metadata
+- **Play**: Click any video card to open the HLS streaming player
+- **Edit**: Update title, tags, or category anytime
+- **Download**: Retrieve original files directly
 
 ---
 
@@ -135,56 +134,26 @@ The app will be available at [**http://localhost:4200**](http://localhost:4200)
 ```
 src/
 ├── app/
-│ ├── core/ # Core application modules
-│ │ ├── components/ # Core feature components
-│ │ │ ├── delete-confirm-dialog/ # Confirmation dialog for deletions
-│ │ │ ├── library-header/ # Main navigation header
-│ │ │ ├── login/ # Login page
-│ │ │ ├── signup/ # Registration page
-│ │ │ ├── video-card/ # Video card with thumbnail and metadata 
-│ │ │ ├── video-edit-dialog/ # Dialog for editing video metadata
-│ │ │ ├── video-grid/ # Grid/list view for videos
-│ │ │ ├── video-library/ # Main library page container
-│ │ │ ├── video-player-dialog/ # Video.js player in overlay
-│ │ │ └── video-upload-dialog/ # Upload form dialog
-│ │ ├── config/
-│ │ │ └── app.config.ts # App-wide configuration (API URL, limits)
-│ │ ├── guards/
-│ │ │ ├── auth-guard.ts # Protects authenticated routes
-│ │ │ └── upload-guard.ts # Guards for upload operations
-│ │ ├── interceptors/
-│ │ │ └── auth.interceptor.ts # Injects JWT token in HTTP requests
-│ │ ├── models/
-│ │ │ ├── auth.model.ts # Authentication types and interfaces
-│ │ │ └── video.model.ts # Video data models
-│ │ └── services/
-│ │ ├── auth.service.ts # Authentication logic (login, signup, token)
-│ │ ├── upload-progress.service.ts # Manages upload state and progress
-│ │ ├── video-api.service.ts # HTTP calls to backend API
-│ │ └── video.service.ts # Video business logic and state
-│ ├── shared/ # Shared reusable modules
-│ │ ├── components/
-│ │ │ ├── app-footer/ # Application footer
-│ │ │ └── upload-progress/ # Upload progress indicator widget
-│ │ └── pipes/
-│ │ ├── duration-format-pipe.ts # Formats video duration (e.g., "1:23:45")
-│ │ └── file-size-pipe.ts # Formats file sizes (e.g., "125 MB")
-│ ├── app.component.ts # Root application component
-│ ├── app.config.ts # Angular app configuration
-│ ├── app.html # Root template
-│ ├── app.routes.ts # Application routing
-│ └── app.scss # Root styles
-├── index.html # Main HTML entry point
-├── main.ts # Application bootstrap
-└── styles.scss # Global styles and theme
+│   ├── core/                 # Core application logic
+│   │   ├── components/       # Feature components (Login, Library, Player...)
+│   │   ├── config/           # App-wide configuration
+│   │   ├── guards/           # Route protection guards
+│   │   ├── interceptors/     # HTTP interceptors (JWT injection)
+│   │   ├── models/           # TypeScript interfaces
+│   │   └── services/         # API services & State management
+│   ├── shared/               # Reusable UI components & Pipes
+│   ├── app.routes.ts         # Application routing
+│   └── app.config.ts         # Angular provider configuration
+├── index.html                # Entry point
+└── main.ts                   # Bootstrap logic
 ```
 ---
 
-## Configuration
+## Configuration Limits
 
-### Video Upload Limits
+### Video Upload
 
-Default limits (configurable in `app.config.ts`):
+Default limits (configurable in `src/app/core/config/environment.config.ts`):
 
 - **Max video size**: 2048 MB (2 GB)
 - **Max video duration**: 3600 seconds (1 hour)
@@ -193,16 +162,8 @@ Default limits (configurable in `app.config.ts`):
 - **Supported thumbnail formats**: JPEG, PNG, WebP
 
 ### Categories
-
 Available video categories:
-- Programming
-- Photography
-- Cooking
-- Fitness
-- Music
-- Travel
-- Business
-- Other
+- Programming, Photography, Cooking, Fitness, Music, Travel, Business, Other
 
 ---
 
@@ -212,37 +173,34 @@ Available video categories:
 - **Angular Material** 20.2.12
 - **Tailwind CSS** 4.1.17
 - **Video.js** 8.23.4 (HLS streaming player)
-- **RxJS** 7.8.0 (reactive programming)
-- **TypeScript** 5.9.2
+- **Nginx** (Production Server)
+- **Docker** (Containerization)
 
 ---
 
 ## Development
 
 ### Build for production
-
+```
 npm run build
-
+```
 Output will be in `dist/remote-video-client/browser/`
 
 ### Serve production build locally
 
 After building, you can serve the production build locally for testing:
-
+```
 cd dist/remote-video-client/browser
-
 http-server -p 8080 -c-1 --proxy http://localhost:8080?
-
-**Note**: You need to have `http-server` installed globally:
-
-npm install -g http-server
+```
+**Note**: You need to have `http-server` installed globally (`npm install -g http-server`).
 
 The production build will be available at [**http://localhost:8080**](http://localhost:8080)
 
 ### Run tests
-
+```
 npm test
-
+```
 **Note**: Test files (`.spec.ts`) are currently at boilerplate/default state generated by Angular CLI. Custom test implementation is planned for future development.
 
 ### Code style
@@ -263,7 +221,7 @@ This frontend connects to the [Remote Video Library Backend](https://github.com/
 - JWT tokens are automatically attached to protected API requests via HTTP interceptor
 - Authentication state is managed globally with RxJS BehaviorSubject
 - All video operations are per-user isolated (users only see their own videos)
-- Backend URL configured in `src/app/core/config/app.config.ts`
+- Backend URL configured in `src/app/core/config/environment.config.ts`
 
 ---
 
