@@ -1,6 +1,7 @@
 # Remote Video Library – Frontend
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/Docker-Production_Ready-blue.svg)](https://hub.docker.com/)
 
 ## Description
 
