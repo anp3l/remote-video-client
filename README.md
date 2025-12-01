@@ -1,14 +1,14 @@
 # Remote Video Library – Frontend
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Docker](https://img.shields.io/badge/Docker-Production_Ready-blue.svg)](https://hub.docker.com/)
+[![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white)](#option-a-docker)
 
 ## Description
 
-A modern Angular application for managing and streaming your personal video library remotely. Built with Angular 20, Material Design, and Tailwind CSS, featuring secure authentication, video upload with metadata management, and seamless HLS streaming playback.
+A modern Angular application for managing and streaming a personal video library. Built with Angular 20, Material Design, and Tailwind CSS, featuring authentication, video upload with metadata management, and HLS-based streaming playback.
 
-> **Note on Architecture:**
-> This project was designed as a distributed cloud architecture where the client is public and connects to user-owned private servers. Currently, the project is configured for **self-hosted local deployment** (Localhost), giving you full control over your data and streaming infrastructure.
+> **Architecture note**
+> The long-term goal of this project is a distributed setup where a public client connects to user-owned private servers. Currently, the client connects to a single self-hosted backend (localhost), which manages user accounts/profiles and video content on the same server instance.
 
 ---
 
