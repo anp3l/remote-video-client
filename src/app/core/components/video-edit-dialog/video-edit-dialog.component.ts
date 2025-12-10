@@ -37,10 +37,10 @@ export class VideoEditDialogComponent {
   saving = signal(false);
 
   editForm = this.fb.group({
-    title: [this.data.video.title, Validators.required],
-    description: [this.data.video.description],
-    category: [this.data.video.category, Validators.required],
-    tags: [this.data.video.tags.join(', ')]
+    title: [this.data.video.title, [Validators.required, Validators.maxLength(150)]],
+    description: [this.data.video.description, [Validators.maxLength(2000)]],
+    category: [this.data.video.category, [Validators.required]],
+    tags: [this.data.video.tags.join(', '), [Validators.maxLength(500)]]
   });
 
 /**

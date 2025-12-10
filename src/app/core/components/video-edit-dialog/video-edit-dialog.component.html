@@ -10,6 +10,9 @@
       @if (editForm.get('title')?.hasError('required')) {
         <mat-error>Title required</mat-error>
       }
+      @if (editForm.get('title')?.hasError('maxlength')) {
+        <mat-error>Max 150 characters</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
@@ -17,7 +20,11 @@
       <textarea matInput 
                 formControlName="description"
                 rows="4"
-                placeholder="Insert video description"></textarea>
+                placeholder="Insert video description">
+      </textarea>
+      @if (editForm.get('description')?.hasError('maxlength')) {
+        <mat-error>Max 2000 characters</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field class="w-full" appearance="outline" subscriptSizing="dynamic">
@@ -37,6 +44,9 @@
       <input matInput 
              formControlName="tags"
              placeholder="es. tutorial, beginner, web development">
+      @if (editForm.get('tags')?.hasError('maxlength')) {
+        <mat-error>Max 500 characters</mat-error>
+      }
     </mat-form-field>
   </form>
 </mat-dialog-content>

@@ -45,10 +45,10 @@ export class VideoUploadDialogComponent {
   isClosing = signal(false);
 
   uploadForm = this.fb.group({
-    title: ['', Validators.required],
-    description: [''],
-    category: ['', Validators.required],
-    tags: ['']
+    title: ['', [Validators.required, Validators.maxLength(150)]],
+    description: ['', [Validators.maxLength(2000)]],
+    category: ['', [Validators.required]],
+    tags: ['', [Validators.maxLength(500)]]
   });
 
   /**
