@@ -1,5 +1,7 @@
 services:
   frontend:
     build: .
-    ports: ["4200:80"]
+    ports: ["4200:8080"]
     container_name: remote-video-client
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
