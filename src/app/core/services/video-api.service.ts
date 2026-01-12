@@ -15,7 +15,7 @@ export interface UploadProgressEvent {
 })
 export class VideoApiService {
   private http = inject(HttpClient);
-  private apiUrl = EnvironmentConfig.apiBaseUrl;
+  private apiUrl = EnvironmentConfig.videoApiUrl;
 
   /**
    * Returns an observable of all videos stored in the database.

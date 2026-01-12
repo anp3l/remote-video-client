@@ -12,7 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   
-  private readonly API_URL = EnvironmentConfig.apiBaseUrl;
+  private readonly AUTH_API_URL = EnvironmentConfig.authApiUrl;
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
 
@@ -22,13 +22,13 @@ export class AuthService {
   constructor() {}
 
   signup(data: SignupRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/signup`, data).pipe(
+    return this.http.post<AuthResponse>(`${this.AUTH_API_URL}/auth/signup`, data).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
 
   login(data: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, data).pipe(
+    return this.http.post<AuthResponse>(`${this.AUTH_API_URL}/auth/login`, data).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }

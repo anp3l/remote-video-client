@@ -1,5 +1,9 @@
 export const EnvironmentConfig= {
-  apiBaseUrl: window.location.hostname === 'localhost' 
+  authApiUrl: window.location.hostname === 'localhost' 
+  ? 'http://localhost:4000' 
+  : 'http://host.docker.internal:4000',
+
+  videoApiUrl: window.location.hostname === 'localhost' 
     ? 'http://localhost:3070' 
     : 'http://host.docker.internal:3070',
   portfolio: {
