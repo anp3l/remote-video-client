@@ -71,7 +71,11 @@ export class SignupComponent {
 
   constructor() {
     this.signupForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
+      username: ['', [
+        Validators.required, 
+        Validators.minLength(3),
+        Validators.pattern(/^[a-zA-Z0-9_]+$/)
+      ]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, strongPasswordValidator()]],
       confirmPassword: ['', [Validators.required, confirmPasswordValidator('password')]]
@@ -95,7 +99,15 @@ export class SignupComponent {
         this.router.navigate(['/']);
       },
       error: err => {
-        this.errorMessage = err.error?.error || 'Registration failed';
+        if (err.error?.details && Array.isArray(err.error.details) && err.error.details.length > 0) {
+          const firstDetail = err.error.details[0];
+          this.errorMessage = `${firstDetail.field}: ${firstDetail.msg}`;
+        } else if (err.error?.error) {
+           this.errorMessage = err.error.error;
+        } else {
+           this.errorMessage = 'Registration failed. Please try again.';
+        }
+        
         this.isLoading = false;
       }
     });
