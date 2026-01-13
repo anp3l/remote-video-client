@@ -8,7 +8,9 @@
 A modern Angular application for managing and streaming a personal video library. Built with Angular 20, Material Design, and Tailwind CSS, featuring authentication, video upload with metadata management, and HLS-based streaming playback.
 
 > **Architecture note**
-> The long-term goal of this project is a distributed setup where a public client connects to user-owned private servers. Currently, the client connects to a single self-hosted backend (localhost), which manages user accounts/profiles and video content on the same server instance.
+> This project implements a **Microservices Architecture**. The frontend connects to two distinct services:
+> 1. **Auth Server (IdP)**: Handles user identity, login, and JWT issuance (Port 4000).
+> 2. **Video Server (Resource)**: Handles video uploads, processing, and streaming (Port 3070).
 
 ---
 
@@ -105,13 +107,19 @@ npm start
 
 ## Backend Connection
 
-The application automatically detects the correct backend URL based on the environment. 
+The application automatically detects the correct Auth and Video Server URLs based on the environment context. 
 You can check `src/app/core/config/environment.config.ts`:
 ```
 export const EnvironmentConfig = {
-apiBaseUrl: window.location.hostname === 'localhost'
-? 'http://localhost:3070' // Local npm backend
-: 'http://host.docker.internal:3070', // Docker backend
+  // Identity Provider (Port 4000)
+  authApiUrl: window.location.hostname === 'localhost' 
+  ? 'http://localhost:4000' // Local npm run
+  : 'http://host.docker.internal:4000', // Docker container network
+
+  // Resource Server (Port 3070)
+  videoApiUrl: window.location.hostname === 'localhost' 
+    ? 'http://localhost:3070' // Local npm run
+    : 'http://host.docker.internal:3070' // Docker container network
 };
 ```
 ---
@@ -217,23 +225,24 @@ The project uses Prettier for code formatting. Config available in `package.json
 
 ## API Integration
 
-This frontend connects to the [Remote Video Library Backend](https://github.com/anp3l/remote-video-server).
+This frontend orchestrates requests between two microservices:
 
-- JWT tokens are automatically attached to protected API requests via HTTP interceptor
-- Authentication state is managed globally with RxJS BehaviorSubject
-- All video operations are per-user isolated (users only see their own videos)
-- Backend URL configured in `src/app/core/config/environment.config.ts`
+1. **[Auth Server](https://github.com/anp3l/auth-server)**: Identity Provider (Login/Signup).
+2. **[Video Server](https://github.com/anp3l/remote-video-server)**: Resource Server (Videos/Streaming).
+
+- **JWT Handling**: Tokens issued by the Auth Server are automatically attached to requests destined for the Video Server.
+- **State Management**: Authentication state is managed globally with RxJS BehaviorSubject.
+- **Isolation**: All video operations are per-user isolated based on the `userId` claim in the JWT.
 
 ---
 
 ## Authentication Flow
 
-1. User signs up or logs in via `/login` or `/signup` routes
-2. Backend returns JWT token on successful authentication
-3. Token is stored in localStorage
-4. Auth interceptor automatically adds token to all API requests
-5. Auth guard protects `/library` route from unauthenticated access
-6. Token is validated on each request; expired tokens trigger logout
+1. **Login**: User submits credentials to the **Auth Server** (`POST /auth/login`).
+2. **Token**: Auth Server returns an RS256-signed JWT.
+3. **Storage**: Token is securely stored in the client (e.g., localStorage).
+4. **Access**: When accessing the library, the **Auth Interceptor** attaches the token to requests sent to the **Video Server**.
+5. **Verification**: The Video Server verifies the token's signature using the Public Key and serves the content.
 
 ---
 
