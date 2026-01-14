@@ -54,15 +54,15 @@
     </mat-card-content>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onPlay()">
+      <button mat-menu-item (click)="onPlay()" [disabled]="!isVideoUploaded(video)">
         <mat-icon>play_arrow</mat-icon>
         <span>Play</span>
       </button>
-       <button mat-menu-item (click)="onDownload()">
+       <button mat-menu-item (click)="onDownload()" [disabled]="!isVideoUploaded(video)">
         <mat-icon>download</mat-icon>
         <span>Download</span>
       </button>
-      <button mat-menu-item (click)="onEdit()">
+      <button mat-menu-item (click)="onEdit()" [disabled]="!isVideoUploaded(video)">
         <mat-icon>edit</mat-icon>
         <span>Edit</span>
       </button>
