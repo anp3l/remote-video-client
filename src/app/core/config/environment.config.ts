@@ -1,3 +1,5 @@
+import { version } from '../../../../package.json';
+
 export const EnvironmentConfig= {
   authApiUrl: window.location.hostname === 'localhost' 
   ? 'http://localhost:4000' 
@@ -13,7 +15,7 @@ export const EnvironmentConfig= {
     repoUrl: 'https://github.com/anp3l/remote-video-client' 
   },
   
-  version: '1.0.0',
+  version: version,
   defaultViewMode: 'grid' as const,
   itemsPerPage: 20,
   
