@@ -74,6 +74,13 @@ export class VideoPlayerDialogComponent {
   private initializePlayer(): void {
     const videoId = this.data.video.id;
     if (!videoId) return;
+
+    this.videoApiService.getVideoDuration(videoId).subscribe({
+      next: (duration) => {
+        this.data.video.duration = duration;
+      },
+      error: (err) => console.error('Error while fetching video duration', err)
+    });
     
     this.videoApiService.getSignedUrls(videoId).subscribe({
       next: (urls) => {
