@@ -66,7 +66,7 @@ A modern Angular application for managing and streaming a personal video library
 git clone https://github.com/anp3l/remote-video-client.git
 cd remote-video-client
 ```
-### 2. Choose your Deployment Method
+### 2. Choose your Setup Method
 
 #### Option A: Docker
 The easiest way to run the app. Requires **Docker**.
