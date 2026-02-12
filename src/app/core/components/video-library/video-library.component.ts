@@ -143,6 +143,15 @@ export class VideoLibraryComponent {
   }
 
   handleLogout(): void {
-    this.authService.logout();
+    this.authService.logout().subscribe({
+      next: () => {
+        console.log('Logged out successfully');
+        // Optional: Show successful toasts
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+        // Even in the event of an error, the user was logged out locally
+      }
+    });
   }
 }
