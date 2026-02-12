@@ -7,10 +7,13 @@ export interface SignupRequest {
   username: string;
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: User;
   message?: string;
 }
@@ -19,4 +22,5 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  role?: string;
 }
